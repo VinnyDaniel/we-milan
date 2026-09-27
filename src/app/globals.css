@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Pacifico&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #272A4B;
+  --navy-2: #333866;
+  --navy-3: #3E437A;
+  --ink: #181A31;
+  --coral: #E44C4E;
+  --coral-dim: #B93A3C;
+  --gold: #CCA166;
+  --gold-light: #E2C78C;
+  --cream: #F2ECDD;
+  --muted: #9C9FBE;
+  --line: rgba(242,236,221,0.12);
+}
+
+body {
+  background-color: #101222;
+  color: #F2ECDD;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar hiding utilities */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3D Transform Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.perspective-1200 {
+  perspective: 1200px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* Typography matching We Milan introductory website */
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+h1 em, h2 em, h3 em, h4 em {
+  font-style: italic;
+  color: #E44C4E;
+  font-weight: 500;
+}
+
+.g {
+  font-style: italic;
+  color: #CCA166;
+  font-weight: 500;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #E2C78C;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: #CCA166;
+  display: inline-block;
+}
+
+.tagline-cursive {
+  font-family: 'Pacifico', cursive;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #E2C78C;
+}
+
+/* ========================================================
+   LIGHT THEME (GIORNO MILANO) STYLING SYSTEM
+   ======================================================== */
+html[data-theme='light'],
+body.light-theme {
+  background-color: #EDE8DC;
+  color: #181A31;
+}
+
+/* Background mappings */
+html[data-theme='light'] .bg-\[\#181A31\] {
+  background-color: #FAF7F2 !important;
+}
+
+html[data-theme='light'] .bg-\[\#181A31\]\/80 {
+  background-color: rgba(250, 247, 242, 0.88) !important;
+}
+
+html[data-theme='light'] .bg-\[\#181A31\]\/90 {
+  background-color: rgba(250, 247, 242, 0.94) !important;
+}
+
+html[data-theme='light'] .bg-\[\#181A31\]\/95 {
+  background-color: rgba(250, 247, 242, 0.96) !important;
+}
+
+html[data-theme='light'] .bg-\[\#101222\] {
+  background-color: #EDE8DC !important;
+}
+
+html[data-theme='light'] .bg-\[\#272A4B\] {
+  background-color: #FFFFFF !important;
+}
+
+html[data-theme='light'] .bg-\[\#272A4B\]\/40 {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+html[data-theme='light'] .bg-\[\#272A4B\]\/60 {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+html[data-theme='light'] .bg-\[\#272A4B\]\/70 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html[data-theme='light'] .bg-\[\#272A4B\]\/80 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+html[data-theme='light'] .bg-\[\#333866\] {
+  background-color: #F1ECE1 !important;
+}
+
+/* Text color mappings */
+html[data-theme='light'] .text-\[\#F2ECDD\] {
+  color: #181A31 !important;
+}
+
+html[data-theme='light'] .text-\[\#9C9FBE\] {
+  color: #616584 !important;
+}
+
+/* Gradients */
+html[data-theme='light'] .from-\[\#272A4B\] {
+  --tw-gradient-from: #FFFFFF var(--tw-gradient-from-position) !important;
+}
+
+html[data-theme='light'] .from-\[\#272A4B\]\/80 {
+  --tw-gradient-from: rgba(255, 255, 255, 0.92) var(--tw-gradient-from-position) !important;
+}
+
+html[data-theme='light'] .from-\[\#272A4B\]\/70 {
+  --tw-gradient-from: rgba(255, 255, 255, 0.85) var(--tw-gradient-from-position) !important;
+}
+
+html[data-theme='light'] .to-\[\#181A31\] {
+  --tw-gradient-to: #F5F1E8 var(--tw-gradient-to-position) !important;
+}
+
+html[data-theme='light'] .to-\[\#101222\] {
+  --tw-gradient-to: #EAE4D5 var(--tw-gradient-to-position) !important;
+}
+
+/* Borders */
+html[data-theme='light'] [class*='border-\[rgba(242,236,221'] {
+  border-color: rgba(24, 26, 49, 0.12) !important;
+}
+
+html[data-theme='light'] .border-b-\[rgba\(242\,236\,221\,0\.08\)\] {
+  border-color: rgba(24, 26, 49, 0.08) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.08\)\] {
+  border-color: rgba(24, 26, 49, 0.08) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.1\)\] {
+  border-color: rgba(24, 26, 49, 0.1) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.12\)\] {
+  border-color: rgba(24, 26, 49, 0.12) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.14\)\] {
+  border-color: rgba(24, 26, 49, 0.14) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.15\)\] {
+  border-color: rgba(24, 26, 49, 0.15) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.18\)\] {
+  border-color: rgba(24, 26, 49, 0.16) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.2\)\] {
+  border-color: rgba(24, 26, 49, 0.18) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.22\)\] {
+  border-color: rgba(24, 26, 49, 0.2) !important;
+}
+
+html[data-theme='light'] .border-\[rgba\(242\,236\,221\,0\.25\)\] {
+  border-color: rgba(24, 26, 49, 0.22) !important;
+}
+
+/* Form Controls in Light Mode */
+html[data-theme='light'] input,
+html[data-theme='light'] select,
+html[data-theme='light'] textarea {
+  color: #181A31 !important;
+  background-color: #F7F4EC !important;
+  border-color: rgba(24, 26, 49, 0.16) !important;
+}
+
+html[data-theme='light'] input::placeholder,
+html[data-theme='light'] textarea::placeholder {
+  color: #8A8EA8 !important;
+}
+
+/* Shadows in Light Mode */
+html[data-theme='light'] .shadow-xl,
+html[data-theme='light'] .shadow-2xl {
+  box-shadow: 0 14px 34px -10px rgba(24, 26, 49, 0.1), 0 4px 14px rgba(24, 26, 49, 0.04) !important;
+}
+
+/* Eyebrows & Accents in Light Mode */
+html[data-theme='light'] .eyebrow {
+  color: #9C7034 !important;
+}
+
+html[data-theme='light'] .eyebrow::before {
+  background: #B8863A !important;
+}
+
+/* ProfileCard in Light Mode */
+html[data-theme='light'] .pc-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(24, 26, 49, 0.14) !important;
+  box-shadow: 0 20px 45px -10px rgba(24, 26, 49, 0.14) !important;
+}
+
+html[data-theme='light'] .pc-inside {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html[data-theme='light'] .pc-user-info {
+  background: rgba(250, 247, 242, 0.92) !important;
+  border-color: rgba(24, 26, 49, 0.14) !important;
+}
+
+html[data-theme='light'] .pc-details h3 {
+  color: #181A31 !important;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8) !important;
+}
+
+html[data-theme='light'] .pc-details p {
+  color: #9C7034 !important;
+  text-shadow: none !important;
+}
