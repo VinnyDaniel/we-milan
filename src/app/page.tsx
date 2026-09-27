@@ -18,6 +18,9 @@ import PaperCrumple from '@/components/reactbits/PaperCrumple';
 import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import SoundToggle from '@/components/SoundToggle';
+import { assetPath } from '@/utils/asset';
+import sound from '@/services/soundService';
 import { 
   Sparkles, 
   Layers, 
@@ -87,6 +90,7 @@ export default function HomePage() {
 
   const handleWearThis = () => {
     setIsWornToday(true);
+    sound.playSuccess();
     try {
       confetti({
         particleCount: 50,
@@ -99,6 +103,7 @@ export default function HomePage() {
 
   const handleTryAnother = () => {
     setIsWornToday(false);
+    sound.playDissolve();
     setIsDissolving(true);
     setTimeout(() => {
       setOutfitIndex(prev => prev + 1);
@@ -134,6 +139,12 @@ export default function HomePage() {
   if (!isAuthenticated) {
     return (
       <div className="relative flex-1 flex flex-col justify-between p-6 bg-[#181A31] text-[#F2ECDD] min-h-full overflow-hidden">
+        {/* Top-right quick controls for Sound & Theme */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          <SoundToggle />
+          <ThemeToggle />
+        </div>
+
         {/* Ambient Molten Metal Canvas from React Bits */}
         <div className="absolute inset-0 pointer-events-none opacity-30 z-0">
           <MoltenMetal
@@ -152,9 +163,9 @@ export default function HomePage() {
 
         {/* Brand Header */}
         <div className="relative z-10 pt-8 text-center">
-          <div className="inline-flex w-20 h-20 rounded-3xl overflow-hidden border border-[rgba(242,236,221,0.22)] shadow-[0_12px_30px_rgba(228,76,78,0.3)] items-center justify-center mb-4">
+          <div className="inline-flex w-20 h-20 rounded-3xl overflow-hidden border border-[rgba(242,236,221,0.22)] shadow-[0_12px_30px_rgba(228,76,78,0.3)] items-center justify-center mb-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="We Milan" className="w-full h-full object-cover" />
+            <img src={assetPath('/logo.png')} alt="We Milan" className="w-full h-full object-cover" />
           </div>
           <div className="flex justify-center">
             <FoldText
@@ -162,14 +173,14 @@ export default function HomePage() {
               hinge="top"
               trigger="mount"
               duration={0.7}
-              fontSize="2rem"
+              fontSize="2.2rem"
               fontWeight={600}
               color="#F2ECDD"
               className="font-serif tracking-tight"
             />
           </div>
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#CCA166] mt-1.5">
-            The World&apos;s Your Runway
+          <p className="tagline-cursive text-xl text-[#E2C78C] mt-2 tracking-wide">
+            The world&apos;s your runway
           </p>
         </div>
 
@@ -288,6 +299,7 @@ export default function HomePage() {
         <WeMilanLogo variant="header" size="sm" />
 
         <div className="flex items-center gap-2">
+          <SoundToggle />
           <ThemeToggle />
           <Link
             href="/profile"

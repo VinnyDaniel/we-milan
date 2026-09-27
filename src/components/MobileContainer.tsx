@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
+import sound from '@/services/soundService';
 
 const GradientWaves = dynamic(() => import('@/components/reactbits/GradientWaves'), {
   ssr: false,
@@ -15,6 +17,37 @@ interface MobileContainerProps {
 export const MobileContainer: React.FC<MobileContainerProps> = ({ children }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const pathname = usePathname();
+  const prevPathRef = useRef(pathname);
+
+  // Transition swoosh sound when route changes
+  useEffect(() => {
+    if (prevPathRef.current && prevPathRef.current !== pathname) {
+      sound.playTransition();
+    }
+    prevPathRef.current = pathname;
+  }, [pathname]);
+
+  // Subtle luxury tactile click sound for all interactive buttons, links, controls
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('[aria-label*="sounds"]')) return;
+
+      const clickable = target.closest(
+        'button, a, [role="button"], input[type="submit"], input[type="button"], input[type="radio"], input[type="checkbox"], select, summary'
+      );
+      if (clickable) {
+        sound.playClick();
+      }
+    };
+
+    window.addEventListener('click', handleGlobalClick, { capture: true, passive: true });
+    return () => {
+      window.removeEventListener('click', handleGlobalClick, { capture: true });
+    };
+  }, []);
 
   return (
     <div

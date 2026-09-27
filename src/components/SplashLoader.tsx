@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import MoltenMetal from '@/components/reactbits/MoltenMetal';
 import FoldText from '@/components/reactbits/FoldText';
+import { assetPath } from '@/utils/asset';
 
 interface SplashLoaderProps {
   onComplete: () => void;
@@ -82,7 +83,7 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
+            src={assetPath('/logo.png')}
             alt="We Milan Logo"
             className="w-full h-full object-cover"
           />
@@ -104,21 +105,11 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
             className="font-serif tracking-tight drop-shadow-md"
           />
 
-          {/* Subtitle / Tagline FoldText */}
-          <div className="mt-2">
-            <FoldText
-              text={tagline}
-              splitBy="word"
-              hinge="left"
-              trigger="mount"
-              duration={0.65}
-              stagger={0.08}
-              creaseShading={0.4}
-              fontSize="0.8rem"
-              fontWeight={500}
-              color="#CCA166"
-              className="font-sans uppercase tracking-[0.2em]"
-            />
+          {/* Subtitle Tagline styled exactly as introductory website */}
+          <div className="mt-3">
+            <span className="tagline-cursive text-xl text-[#E2C78C] tracking-wide block">
+              The world&apos;s your runway
+            </span>
           </div>
         </div>
 

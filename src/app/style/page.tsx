@@ -23,6 +23,8 @@ import PaperCrumple from '@/components/reactbits/PaperCrumple';
 import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import SoundToggle from '@/components/SoundToggle';
+import sound from '@/services/soundService';
 import { 
   Sparkles, 
   Umbrella, 
@@ -136,6 +138,7 @@ function StyleMeContent() {
 
     setRecommendation(result);
     setIsGenerating(false);
+    sound.playSuccess();
 
     try {
       confetti({
@@ -149,10 +152,12 @@ function StyleMeContent() {
 
   const handleWearThis = () => {
     setIsWorn(true);
+    sound.playSuccess();
   };
 
   const handleSaveOutfit = () => {
     setIsSaved(true);
+    sound.playSuccess();
   };
 
   return (
@@ -163,6 +168,7 @@ function StyleMeContent() {
           <WeMilanLogo variant="header" size="sm" />
 
           <div className="flex items-center gap-2">
+            <SoundToggle />
             <ThemeToggle />
             {anchorItem && (
               <button

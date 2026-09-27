@@ -12,6 +12,7 @@ import InfiniteSpiral, { SpiralItem } from '@/components/reactbits/InfiniteSpira
 import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import SoundToggle from '@/components/SoundToggle';
 import { 
   Sparkles, 
   Droplets, 
@@ -133,6 +134,7 @@ export default function WardrobePage() {
           <WeMilanLogo variant="header" size="sm" />
 
           <div className="flex items-center gap-2">
+            <SoundToggle />
             <ThemeToggle />
 
             {/* View switcher: 3D Carousel vs Infinite Spiral */}

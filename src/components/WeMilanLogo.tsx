@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { assetPath } from '@/utils/asset';
 
 interface WeMilanLogoProps {
   variant?: 'header' | 'monogram' | 'hero';
@@ -34,11 +35,11 @@ export const WeMilanLogo: React.FC<WeMilanLogoProps> = ({
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
       {/* Official We Milan App Icon */}
       <div
-        className={`${badgeSize} shrink-0 overflow-hidden border border-[rgba(242,236,221,0.22)] shadow-[0_4px_14px_rgba(0,0,0,0.35),0_0_12px_rgba(204,161,102,0.15)] relative`}
+        className={`${badgeSize} shrink-0 overflow-hidden rounded-xl border border-[rgba(242,236,221,0.22)] shadow-[0_4px_14px_rgba(0,0,0,0.35),0_0_12px_rgba(204,161,102,0.15)] relative`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.png"
+          src={assetPath('/logo.png')}
           alt="We Milan Logo"
           className="w-full h-full object-cover"
         />
@@ -48,13 +49,13 @@ export const WeMilanLogo: React.FC<WeMilanLogoProps> = ({
         <div className="flex flex-col justify-center leading-none">
           <div className="flex items-center gap-1.5">
             <span className={`font-serif font-semibold tracking-tight text-[#F2ECDD] ${textSize}`}>
-              WE MILAN
+              We <em className="italic text-[#E44C4E] font-medium">Milan</em>
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E44C4E] shadow-[0_0_6px_#E44C4E]" />
           </div>
           {showSubtitle && (
-            <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-[#CCA166] mt-0.5 font-medium">
-              THE WORLD&apos;S YOUR RUNWAY
+            <span className="tagline-cursive text-[12px] text-[#E2C78C] mt-1 font-normal tracking-wide">
+              The world&apos;s your runway
             </span>
           )}
         </div>

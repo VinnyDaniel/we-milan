@@ -9,6 +9,7 @@ import { BottomNav } from '@/components/BottomNav';
 import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import SoundToggle from '@/components/SoundToggle';
 import { 
   Camera, 
   Upload, 
@@ -173,6 +174,7 @@ export default function ScanPage() {
           <WeMilanLogo variant="header" size="sm" />
 
           <div className="flex items-center gap-2">
+            <SoundToggle />
             <ThemeToggle />
             <button
               onClick={() => {

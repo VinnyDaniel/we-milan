@@ -12,6 +12,7 @@ import WeMilanLogo from '@/components/WeMilanLogo';
 import ProfilePhotoModal from '@/components/ProfilePhotoModal';
 import MeasurementsModal from '@/components/MeasurementsModal';
 import ThemeToggle from '@/components/ThemeToggle';
+import SoundToggle from '@/components/SoundToggle';
 import { 
   Bluetooth, 
   Droplets, 
@@ -167,6 +168,7 @@ Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
         <WeMilanLogo variant="header" size="sm" />
 
         <div className="flex items-center gap-2">
+          <SoundToggle />
           <ThemeToggle />
           <button
             onClick={handleShareDossier}

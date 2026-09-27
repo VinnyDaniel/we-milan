@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sparkles, Layers, Home, User, PlusCircle } from 'lucide-react';
+import sound from '@/services/soundService';
 
 export const BottomNav: React.FC = () => {
   const pathname = usePathname();
@@ -28,6 +29,9 @@ export const BottomNav: React.FC = () => {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => {
+                  if (!isActive) sound.playTransition();
+                }}
                 className="group flex flex-col items-center -mt-5"
                 title="Scan Clothing"
               >
@@ -45,6 +49,9 @@ export const BottomNav: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => {
+                if (!isActive) sound.playTransition();
+              }}
               className={`flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
                 isActive
                   ? 'text-[#CCA166]'
