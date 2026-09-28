@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { StorageService } from '@/services/storageService';
 import { WeatherService } from '@/services/weatherService';
 import { WearableService } from '@/services/wearableService';
+import { GeminiService, PairedOutfitResult } from '@/services/geminiService';
 import { WardrobeItem, WeatherInfo, WearableMoodSignal } from '@/types/wardrobe';
 import { SplashLoader } from '@/components/SplashLoader';
 import { WeatherWidget } from '@/components/WeatherWidget';
@@ -73,19 +74,55 @@ export default function HomePage() {
     setWearable(WearableService.getSignal());
   }, []);
 
-  // Today's Pick Outfit combinations from wardrobe
-  const getTodaysOutfit = () => {
+  // Today's Pick: Harmonious Outfit Pairing from digital wardrobe
+  const getTodaysOutfit = (): {
+    top?: WardrobeItem;
+    bottom?: WardrobeItem;
+    shoe?: WardrobeItem;
+    outerwear?: WardrobeItem;
+    pairing: PairedOutfitResult | null;
+  } => {
+    if (wardrobe.length === 0) {
+      return { top: undefined, bottom: undefined, shoe: undefined, outerwear: undefined, pairing: null };
+    }
+
     const cleanItems = wardrobe.filter(i => i.laundryStatus !== 'IN_LAUNDRY');
-    const tops = cleanItems.filter(i => i.category === 'TOPS');
-    const bottoms = cleanItems.filter(i => i.category === 'BOTTOMS');
-    const shoes = cleanItems.filter(i => i.category === 'SHOES');
+    const pool = cleanItems.length > 0 ? cleanItems : wardrobe;
 
-    // Pick based on outfitIndex rotation
-    const top = tops[outfitIndex % (tops.length || 1)] || wardrobe.find(i => i.name.includes('Linen'));
-    const bottom = bottoms[outfitIndex % (bottoms.length || 1)] || wardrobe.find(i => i.name.includes('Trousers'));
-    const shoe = shoes[outfitIndex % (shoes.length || 1)] || wardrobe.find(i => i.name.includes('Sneaker'));
+    // Anchor candidates across diverse categories: Tops, Knitwear, Dresses, Co-Ords
+    const anchors = pool.filter(i => 
+      i.category === 'TOPS' || 
+      i.category === 'KNITWEAR' || 
+      i.category === 'DRESSES' || 
+      i.category === 'CO-ORDS'
+    );
+    const anchorList = anchors.length > 0 ? anchors : pool;
+    const selectedAnchor = anchorList[outfitIndex % anchorList.length];
 
-    return { top, bottom, shoe };
+    if (!selectedAnchor) {
+      return { top: undefined, bottom: undefined, shoe: undefined, outerwear: undefined, pairing: null };
+    }
+
+    // Run Atelier Outfit Pairing engine
+    const pairing = GeminiService.pairGarmentWithWardrobe(selectedAnchor, pool);
+
+    let top: WardrobeItem | undefined;
+    let bottom: WardrobeItem | undefined;
+    let shoe: WardrobeItem | undefined;
+    let outerwear: WardrobeItem | undefined;
+
+    if (selectedAnchor.category === 'DRESSES') {
+      top = selectedAnchor;
+      shoe = pairing.pairedPieces.find(p => p.category === 'SHOES') || pool.find(p => p.category === 'SHOES');
+      outerwear = pairing.pairedPieces.find(p => p.category === 'OUTERWEAR' || p.category === 'BAGS') || pool.find(p => p.category === 'BAGS');
+    } else {
+      top = selectedAnchor;
+      bottom = pairing.pairedPieces.find(p => p.category === 'BOTTOMS') || pool.find(p => p.category === 'BOTTOMS');
+      shoe = pairing.pairedPieces.find(p => p.category === 'SHOES') || pool.find(p => p.category === 'SHOES');
+      outerwear = pairing.pairedPieces.find(p => p.category === 'OUTERWEAR' || p.category === 'BAGS' || p.category === 'ACCESSORIES');
+    }
+
+    return { top, bottom, shoe, outerwear, pairing };
   };
 
   const currentOutfit = getTodaysOutfit();
@@ -117,10 +154,23 @@ export default function HomePage() {
     sound.playDissolve();
     setIsWornToday(false);
     setOutfitIndex(prev => prev + 1);
-    setCrumpleToast('✨ Paper crumpled! Unfolded another curated look');
+
+    setTimeout(() => {
+      sound.playSuccess();
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ['#E44C4E', '#CCA166', '#F2ECDD']
+        });
+      } catch {}
+    }, 400);
+
+    setCrumpleToast('✨ Paper crumpled! Atelier AI paired a fresh curated look');
     setTimeout(() => {
       setCrumpleToast(null);
-    }, 2800);
+    }, 3200);
   };
 
   const handleAuthSubmit = (e: React.FormEvent) => {
@@ -423,13 +473,20 @@ export default function HomePage() {
             </div>
           </div>
 
-          <h3 className="font-serif text-lg font-medium text-[#F2ECDD]">
-            Your outfit for today
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif text-lg font-medium text-[#F2ECDD]">
+              Your outfit for today
+            </h3>
+            {currentOutfit.pairing && (
+              <span className="font-mono text-[9px] bg-[#CCA166]/15 text-[#CCA166] border border-[#CCA166]/30 px-2 py-0.5 rounded-full font-bold">
+                {currentOutfit.pairing.harmonyScore}% Harmony &bull; {currentOutfit.pairing.colorHarmony}
+              </span>
+            )}
+          </div>
 
-          {/* 3D Paper Crumple Lookbook Card or 3-Piece Grid */}
-          {todayLookbookMode === 'crumple' && currentOutfit.top ? (
-            <div className="my-3 flex flex-col items-center bg-[#181A31]/60 rounded-2xl p-3 border border-[rgba(242,236,221,0.1)]">
+          {/* 3D Paper Crumple Lookbook Card */}
+          {todayLookbookMode === 'crumple' && currentOutfit.top && (
+            <div className="my-3 flex flex-col items-center bg-gradient-to-b from-[#272A4B]/80 via-[#272A4B]/60 to-[#181A31] rounded-3xl p-4 border border-[rgba(204,161,102,0.2)] shadow-xl space-y-3 animate-fadeIn">
               <div className="w-full flex justify-center overflow-hidden" style={{ minHeight: '340px' }}>
                 <PaperCrumple
                   src={currentOutfit.top.imageUrl}
@@ -438,97 +495,137 @@ export default function HomePage() {
                   height={300}
                   sceneHeight={350}
                   releaseBehavior="restore"
-                  crumpleAmount={0.82}
-                  crumpleDuration={0.55}
+                  crumpleAmount={0.85}
+                  crumpleDuration={0.5}
                   releaseDuration={0.4}
-                  foldCount={5}
-                  paperColor="#f2ecdd"
+                  foldCount={6}
+                  paperColor="#f5efe1"
                   draggable={true}
                   returnToOrigin={true}
                   onCrumple={handleCrumpleSuggestLook}
                 />
               </div>
-              <div className="flex items-center gap-1.5 font-mono text-[9.5px] text-[#CCA166] mt-2">
-                <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
-                <span>Crumple paper to suggest another look • Drag to fold</span>
-              </div>
-            </div>
-          ) : (
-            /* Outfit Piece Previews with smooth interactive zoom and card-hover */
-            <div className="grid grid-cols-3 gap-2.5 my-3.5">
-              {/* Top */}
-              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
-                <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={currentOutfit.top?.imageUrl}
-                    alt={currentOutfit.top?.name || 'Top'}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
-                  {currentOutfit.top?.name || 'White Linen Shirt'}
-                </span>
-                <span className="font-mono text-[9px] text-[#9C9FBE]">
-                  {currentOutfit.top?.fabric || 'Linen'}
-                </span>
-              </div>
 
-              {/* Bottom */}
-              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
-                <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={currentOutfit.bottom?.imageUrl}
-                    alt={currentOutfit.bottom?.name || 'Bottom'}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+              {/* Interactive Crumple Prompt & Direct Button */}
+              <div className="flex items-center justify-between w-full pt-1 px-1">
+                <div className="flex items-center gap-1.5 font-mono text-[9.5px] text-[#CCA166]">
+                  <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
+                  <span>Drag paper to crumple &amp; suggest look</span>
                 </div>
-                <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
-                  {currentOutfit.bottom?.name || 'Beige Trousers'}
-                </span>
-                <span className="font-mono text-[9px] text-[#9C9FBE]">
-                  {currentOutfit.bottom?.fabric || 'Cotton Twill'}
-                </span>
-              </div>
 
-              {/* Shoe */}
-              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
-                <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={currentOutfit.shoe?.imageUrl}
-                    alt={currentOutfit.shoe?.name || 'Shoe'}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
-                  {currentOutfit.shoe?.name || 'White Sneakers'}
-                </span>
-                <span className="font-mono text-[9px] text-[#9C9FBE]">
-                  {currentOutfit.shoe?.fabric || 'Leather'}
-                </span>
+                <button
+                  type="button"
+                  onClick={handleCrumpleSuggestLook}
+                  className="bg-[#181A31] hover:bg-[#3E437A] text-[#CCA166] border border-[#CCA166]/30 px-3 py-1 rounded-full font-mono text-[9.5px] flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
+                >
+                  <RefreshCw className="w-3 h-3 text-[#E44C4E]" />
+                  <span>Crumple &amp; Pair</span>
+                </button>
               </div>
             </div>
           )}
 
-          {/* "Why this works" Editorial Breakdown */}
-          <div className="bg-[#181A31]/80 rounded-2xl p-3.5 border border-[rgba(242,236,221,0.08)] space-y-1.5 my-3">
-            <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#CCA166] block font-semibold">
-              Why this works
+          {/* ATELIER PAIRED ENSEMBLE: Pieces Grid */}
+          <div className="space-y-1.5 my-3">
+            <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#9C9FBE] block font-semibold">
+              Atelier Paired Pieces ({currentOutfit.pairing?.colorHarmony || 'Tonal Balance'})
             </span>
-            <ul className="space-y-1 font-sans text-xs text-[#9C9FBE]">
+
+            <div className="grid grid-cols-3 gap-2.5">
+              {/* Top / Anchor */}
+              {currentOutfit.top && (
+                <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={currentOutfit.top.imageUrl}
+                      alt={currentOutfit.top.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-1 left-1 bg-[#E44C4E] text-[#181A31] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
+                      Anchor
+                    </span>
+                  </div>
+                  <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
+                    {currentOutfit.top.name}
+                  </span>
+                  <span className="font-mono text-[9px] text-[#CCA166] truncate flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: currentOutfit.top.colorMetrics?.hex || '#CCA166' }} />
+                    <span>{currentOutfit.top.category}</span>
+                  </span>
+                </div>
+              )}
+
+              {/* Bottom / Pairing */}
+              {currentOutfit.bottom && (
+                <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={currentOutfit.bottom.imageUrl}
+                      alt={currentOutfit.bottom.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
+                      Pairing
+                    </span>
+                  </div>
+                  <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
+                    {currentOutfit.bottom.name}
+                  </span>
+                  <span className="font-mono text-[9px] text-[#CCA166] truncate flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: currentOutfit.bottom.colorMetrics?.hex || '#3E437A' }} />
+                    <span>{currentOutfit.bottom.category}</span>
+                  </span>
+                </div>
+              )}
+
+              {/* Shoes / Pairing */}
+              {currentOutfit.shoe && (
+                <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={currentOutfit.shoe.imageUrl}
+                      alt={currentOutfit.shoe.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
+                      Pairing
+                    </span>
+                  </div>
+                  <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
+                    {currentOutfit.shoe.name}
+                  </span>
+                  <span className="font-mono text-[9px] text-[#CCA166] truncate flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: currentOutfit.shoe.colorMetrics?.hex || '#F2ECDD' }} />
+                    <span>{currentOutfit.shoe.category}</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* "Why this works" Editorial Breakdown */}
+          <div className="bg-[#181A31]/80 rounded-2xl p-3.5 border border-[rgba(242,236,221,0.08)] space-y-2 my-3">
+            <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#CCA166] block font-semibold">
+              Why this paired ensemble works
+            </span>
+            <p className="font-sans text-xs text-[#F2ECDD] leading-relaxed italic">
+              &ldquo;{currentOutfit.pairing?.pairingRationale || `Harmonized around your ${currentOutfit.top?.name}. Anchored with balanced silhouette and tonal contrast.`}&rdquo;
+            </p>
+            <ul className="space-y-1 font-sans text-xs text-[#9C9FBE] pt-1.5 border-t border-[rgba(242,236,221,0.06)]">
               <li className="flex items-start gap-1.5">
                 <span className="text-[#CCA166] leading-none">•</span>
-                <span>Lightweight fabrics for today&apos;s 28°C weather</span>
+                <span>Breathable fabrics selected for today&apos;s {weather?.temp || 28}°C {weather?.condition || 'Clear'} weather</span>
               </li>
               <li className="flex items-start gap-1.5">
                 <span className="text-[#CCA166] leading-none">•</span>
-                <span>Works for your casual vibe and calm mood state</span>
+                <span>Complementary silhouette aligned with your {wearable?.mood || 'Calm'} mood state</span>
               </li>
               <li className="flex items-start gap-1.5">
                 <span className="text-[#CCA166] leading-none">•</span>
-                <span>All pieces are clean and already in your wardrobe</span>
+                <span>All pieces are clean and authenticated in your digital archive</span>
               </li>
             </ul>
           </div>

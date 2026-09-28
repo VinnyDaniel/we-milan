@@ -27,8 +27,8 @@ const config: Config = {
         muted: '#9C9FBE',
       },
       fontFamily: {
-        serif: ['Fraunces', 'serif'],
-        sans: ['Space Grotesk', 'sans-serif'],
+        serif: ['Fraunces', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['Outfit', 'Space Grotesk', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
         cursive: ['Pacifico', 'cursive'],
       },

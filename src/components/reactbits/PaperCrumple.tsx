@@ -823,7 +823,7 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
     function finish(instant = false) {
       if (!held) return;
       const opts = options.current;
-      const wasCrumpled = !instant && (amount.value > 0.12 || peak > 0.12 || (performance.now() - heldStartTime > 120));
+      const wasCrumpled = !instant && (amount.value > 0.05 || peak > 0.05 || (performance.now() - heldStartTime > 40));
       held = false;
       hit.setAttribute('aria-pressed', 'false');
       hit.dataset.held = 'false';

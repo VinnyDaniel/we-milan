@@ -509,29 +509,57 @@ function StyleMeContent() {
                         />
                       </div>
 
-                      <div className="flex items-center justify-center gap-1.5 bg-[#181A31]/90 border border-[rgba(242,236,221,0.1)] rounded-full py-1.5 px-3 font-mono text-[9px] text-[#CCA166]">
-                        <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
-                        <span>Crumple paper to suggest another look • Drag to fold</span>
+                      <div className="flex items-center justify-between w-full pt-1 px-1">
+                        <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#CCA166]">
+                          <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
+                          <span>Drag paper to crumple &amp; suggest look</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCrumpleSuggestAnotherLook}
+                          className="bg-[#181A31] hover:bg-[#3E437A] text-[#CCA166] border border-[#CCA166]/30 px-3 py-1 rounded-full font-mono text-[9.5px] flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
+                        >
+                          <RefreshCw className="w-3 h-3 text-[#E44C4E]" />
+                          <span>Crumple &amp; Pair</span>
+                        </button>
                       </div>
 
-                      {/* Miniature items list below 3D card */}
-                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[rgba(242,236,221,0.08)] text-left">
+                      {/* Miniature paired items list below 3D card */}
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[rgba(242,236,221,0.08)] text-left w-full">
                         {recommendation.top && (
-                          <div className="bg-[#181A31]/70 p-2 rounded-xl border border-[rgba(242,236,221,0.06)]">
-                            <span className="font-mono text-[8px] text-[#CCA166] uppercase">Top</span>
-                            <p className="font-serif text-[11px] text-[#F2ECDD] truncate">{recommendation.top.name}</p>
+                          <div className="bg-[#181A31]/90 p-2 rounded-xl border border-[rgba(242,236,221,0.08)] flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={recommendation.top.imageUrl} alt={recommendation.top.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="font-mono text-[8px] text-[#CCA166] uppercase block">Top</span>
+                              <p className="font-serif text-[10.5px] text-[#F2ECDD] truncate">{recommendation.top.name}</p>
+                            </div>
                           </div>
                         )}
                         {recommendation.bottom && (
-                          <div className="bg-[#181A31]/70 p-2 rounded-xl border border-[rgba(242,236,221,0.06)]">
-                            <span className="font-mono text-[8px] text-[#CCA166] uppercase">Bottom</span>
-                            <p className="font-serif text-[11px] text-[#F2ECDD] truncate">{recommendation.bottom.name}</p>
+                          <div className="bg-[#181A31]/90 p-2 rounded-xl border border-[rgba(242,236,221,0.08)] flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={recommendation.bottom.imageUrl} alt={recommendation.bottom.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="font-mono text-[8px] text-[#CCA166] uppercase block">Bottom</span>
+                              <p className="font-serif text-[10.5px] text-[#F2ECDD] truncate">{recommendation.bottom.name}</p>
+                            </div>
                           </div>
                         )}
                         {recommendation.shoes && (
-                          <div className="bg-[#181A31]/70 p-2 rounded-xl border border-[rgba(242,236,221,0.06)]">
-                            <span className="font-mono text-[8px] text-[#CCA166] uppercase">Shoes</span>
-                            <p className="font-serif text-[11px] text-[#F2ECDD] truncate">{recommendation.shoes.name}</p>
+                          <div className="bg-[#181A31]/90 p-2 rounded-xl border border-[rgba(242,236,221,0.08)] flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={recommendation.shoes.imageUrl} alt={recommendation.shoes.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="font-mono text-[8px] text-[#CCA166] uppercase block">Shoes</span>
+                              <p className="font-serif text-[10.5px] text-[#F2ECDD] truncate">{recommendation.shoes.name}</p>
+                            </div>
                           </div>
                         )}
                       </div>
