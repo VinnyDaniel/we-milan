@@ -107,7 +107,7 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
             fontSize="2.1rem"
             fontWeight={600}
             color={isLight ? '#181A31' : '#F2ECDD'}
-            className="font-serif tracking-tight drop-shadow-md"
+            className="font-serif tracking-tight drop-shadow-md splash-brand-text"
           />
 
           {/* Subtitle Tagline styled exactly as introductory website */}

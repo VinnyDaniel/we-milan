@@ -20,6 +20,7 @@ import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import SoundToggle from '@/components/SoundToggle';
+import { useTheme } from '@/context/ThemeContext';
 import { assetPath } from '@/utils/asset';
 import sound from '@/services/soundService';
 import { 
@@ -41,6 +42,8 @@ import confetti from 'canvas-confetti';
 
 export default function HomePage() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   // App lifecycle states
   const [showSplash, setShowSplash] = useState(true);
@@ -147,30 +150,15 @@ export default function HomePage() {
     setTimeout(() => {
       setOutfitIndex(prev => prev + 1);
       setIsDissolving(false);
-    }, 1100);
+    }, 900);
   };
 
   const handleCrumpleSuggestLook = () => {
-    sound.playDissolve();
-    setIsWornToday(false);
-    setOutfitIndex(prev => prev + 1);
-
-    setTimeout(() => {
-      sound.playSuccess();
-      try {
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.6 },
-          colors: ['#E44C4E', '#CCA166', '#F2ECDD']
-        });
-      } catch {}
-    }, 400);
-
-    setCrumpleToast('✨ Paper crumpled! Fresh matching look ready!');
+    handleTryAnother();
+    setCrumpleToast('✨ Paper crumpled! Swapped to a fresh outfit!');
     setTimeout(() => {
       setCrumpleToast(null);
-    }, 3200);
+    }, 2800);
   };
 
   const handleAuthSubmit = (e: React.FormEvent) => {
@@ -202,7 +190,9 @@ export default function HomePage() {
   // 2. Welcome & Auth Screen
   if (!isAuthenticated) {
     return (
-      <div className="relative flex-1 flex flex-col justify-between p-6 bg-[#181A31] text-[#F2ECDD] min-h-full overflow-hidden">
+      <div className={`relative flex-1 flex flex-col justify-between p-6 min-h-full overflow-hidden transition-colors duration-300 ${
+        isLight ? 'bg-[#FAF7F2] text-[#181A31]' : 'bg-[#181A31] text-[#F2ECDD]'
+      }`}>
         {/* Top-right quick controls for Sound & Theme */}
         <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
           <SoundToggle />
@@ -210,17 +200,17 @@ export default function HomePage() {
         </div>
 
         {/* Ambient Molten Metal Canvas from React Bits */}
-        <div className="absolute inset-0 pointer-events-none opacity-30 z-0">
+        <div className={`absolute inset-0 pointer-events-none z-0 ${isLight ? 'opacity-20' : 'opacity-30'}`}>
           <MoltenMetal
-            color1="#181A31"
-            color2="#333866"
-            color3="#CCA166"
+            color1={isLight ? '#FAF7F2' : '#181A31'}
+            color2={isLight ? '#E8D5B5' : '#333866'}
+            color3={isLight ? '#FDA4AF' : '#CCA166'}
             speed={0.25}
             scale={4}
-            glow={1.4}
-            brightness={1.1}
+            glow={isLight ? 1.0 : 1.4}
+            brightness={isLight ? 0.95 : 1.1}
             colorMode="molten"
-            opacity={0.6}
+            opacity={isLight ? 0.35 : 0.6}
             mouseInteraction={true}
           />
         </div>
@@ -243,11 +233,13 @@ export default function HomePage() {
               duration={0.7}
               fontSize="2.2rem"
               fontWeight={600}
-              color="#F2ECDD"
-              className="font-serif tracking-tight"
+              color={isLight ? '#181A31' : '#F2ECDD'}
+              className="font-serif tracking-tight entrance-brand-text"
             />
           </div>
-          <p className="tagline-cursive text-xl text-[#E2C78C] mt-2 tracking-wide">
+          <p className={`tagline-cursive text-xl mt-2 tracking-wide ${
+            isLight ? 'text-[#9E7329]' : 'text-[#E2C78C]'
+          }`}>
             The world&apos;s your runway
           </p>
         </div>
@@ -264,11 +256,13 @@ export default function HomePage() {
               stagger={0.06}
               fontSize="1.6rem"
               fontWeight={600}
-              color="#F2ECDD"
+              color={isLight ? '#181A31' : '#F2ECDD'}
               className="font-serif leading-snug"
             />
           </div>
-          <p className="font-sans text-xs text-[#9C9FBE] mt-3 max-w-[280px] mx-auto">
+          <p className={`font-sans text-xs mt-3 max-w-[280px] mx-auto ${
+            isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+          }`}>
             Style that adapts to your environment, plans, and emotional state.
           </p>
 
@@ -276,35 +270,51 @@ export default function HomePage() {
           {authMode !== 'welcome' && (
             <form onSubmit={handleAuthSubmit} className="mt-6 text-left space-y-3 max-w-[320px] mx-auto">
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
+                <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
+                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                }`}>
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-[#9C9FBE] absolute left-3 top-3" />
+                  <Mail className={`w-4 h-4 absolute left-3 top-3 ${
+                    isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                  }`} />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@domain.com"
-                    className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.15)] rounded-xl pl-9 pr-3 py-2 text-sm text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
+                    className={`w-full border rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-[#CCA166] ${
+                      isLight
+                        ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
+                        : 'bg-[#181A31] border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
+                    }`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
+                <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
+                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                }`}>
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-[#9C9FBE] absolute left-3 top-3" />
+                  <Lock className={`w-4 h-4 absolute left-3 top-3 ${
+                    isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                  }`} />
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.15)] rounded-xl pl-9 pr-3 py-2 text-sm text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
+                    className={`w-full border rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-[#CCA166] ${
+                      isLight
+                        ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
+                        : 'bg-[#181A31] border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
+                    }`}
                   />
                 </div>
               </div>
@@ -334,7 +344,11 @@ export default function HomePage() {
 
               <button
                 onClick={() => setAuthMode('signin')}
-                className="w-full bg-transparent hover:bg-[#272A4B] text-[#F2ECDD] border border-[rgba(242,236,221,0.2)] font-sans font-semibold py-3 rounded-full transition-all"
+                className={`w-full font-sans font-semibold py-3 rounded-full transition-all ${
+                  isLight
+                    ? 'bg-white hover:bg-[#FAF7F2] text-[#181A31] border border-[rgba(24,26,49,0.15)] shadow-sm'
+                    : 'bg-transparent hover:bg-[#272A4B] text-[#F2ECDD] border border-[rgba(242,236,221,0.2)]'
+                }`}
               >
                 Sign In
               </button>
@@ -349,7 +363,9 @@ export default function HomePage() {
           ) : (
             <button
               onClick={() => setAuthMode('welcome')}
-              className="w-full text-center font-mono text-xs text-[#9C9FBE] hover:text-[#F2ECDD]"
+              className={`w-full text-center font-mono text-xs transition-colors ${
+                isLight ? 'text-[#616584] hover:text-[#181A31]' : 'text-[#9C9FBE] hover:text-[#F2ECDD]'
+              }`}
             >
               ← Back to options
             </button>
@@ -489,6 +505,7 @@ export default function HomePage() {
             <div className="my-3 flex flex-col items-center bg-gradient-to-b from-[#272A4B]/80 via-[#272A4B]/60 to-[#181A31] rounded-3xl p-4 border border-[rgba(204,161,102,0.2)] shadow-xl space-y-3 animate-fadeIn">
               <div className="w-full flex justify-center overflow-hidden" style={{ minHeight: '340px' }}>
                 <PaperCrumple
+                  key={`paper-outfit-${outfitIndex}-${currentOutfit.top.id}`}
                   src={currentOutfit.top.imageUrl}
                   alt={currentOutfit.top.name}
                   width={240}

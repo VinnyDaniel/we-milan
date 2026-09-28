@@ -490,3 +490,14 @@ html[data-theme='light'] svg:hover {
   filter: drop-shadow(0 0 8px #CCA166) drop-shadow(0 0 16px rgba(228, 76, 78, 0.6));
 }
 
+/* ========================================================
+   LIGHT MODE ENTRANCE TEXT OVERRIDES
+   ======================================================== */
+html[data-theme='light'] .entrance-brand-text,
+html[data-theme='light'] .splash-brand-text,
+html[data-theme='light'] .entrance-brand-text .fold-text-piece,
+html[data-theme='light'] .splash-brand-text .fold-text-piece {
+  color: #181A31 !important;
+  --fold-text-color: #181A31 !important;
+}
+

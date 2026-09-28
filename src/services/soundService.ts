@@ -83,6 +83,54 @@ class SoundService {
   }
 
   /**
+   * Adorable, cheerful, high-end "cute click" for tab navigation
+   */
+  public playCuteClick(): void {
+    if (this.isMuted) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+
+      // 1. Cheerful cute upward micro-pop (bubble blip)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(950, t);
+      osc.frequency.exponentialRampToValueAtTime(1750, t + 0.022);
+      osc.frequency.exponentialRampToValueAtTime(1400, t + 0.045);
+
+      gain.gain.setValueAtTime(0.085, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.055);
+
+      // 2. Sweet little chime harmonic sparkle
+      const chime = ctx.createOscillator();
+      const chimeGain = ctx.createGain();
+
+      chime.type = 'triangle';
+      chime.frequency.setValueAtTime(2350, t + 0.01);
+      chime.frequency.exponentialRampToValueAtTime(2700, t + 0.035);
+
+      chimeGain.gain.setValueAtTime(0.035, t + 0.01);
+      chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+
+      chime.connect(chimeGain);
+      chimeGain.connect(ctx.destination);
+
+      chime.start(t + 0.01);
+      chime.stop(t + 0.05);
+    } catch {}
+  }
+
+  /**
    * Soft pop for chip selections and toggles
    */
   public playPop(): void {

@@ -39,7 +39,7 @@ export const BottomNav: React.FC = () => {
                 key={item.href}
                 href={item.href}
                 onClick={() => {
-                  if (!isActive) sound.playTransition();
+                  sound.playCuteClick();
                 }}
                 className="group flex flex-col items-center -mt-5"
                 title="Scan Clothing"
@@ -59,7 +59,7 @@ export const BottomNav: React.FC = () => {
               key={item.href}
               href={item.href}
               onClick={() => {
-                if (!isActive) sound.playTransition();
+                sound.playCuteClick();
               }}
               className={`flex flex-col items-center py-1 px-1.5 rounded-xl transition-all duration-200 active:scale-90 ${
                 isActive

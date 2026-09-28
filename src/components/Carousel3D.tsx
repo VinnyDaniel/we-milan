@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { WardrobeItem } from '@/types/wardrobe';
 import { ChevronLeft, ChevronRight, Droplets, Sparkles } from 'lucide-react';
+import sound from '@/services/soundService';
 
 interface Carousel3DProps {
   items: WardrobeItem[];
@@ -16,21 +17,24 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
   onSelect
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const startXRef = useRef<number | null>(null);
+  const startYRef = useRef<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
 
   const handlePrev = useCallback(() => {
-    if (selectedIndex > 0) {
-      onSelect(selectedIndex - 1);
-    }
-  }, [selectedIndex, onSelect]);
+    if (!items || items.length <= 1) return;
+    const newIdx = selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
+    onSelect(newIdx);
+    sound.playCuteClick();
+  }, [selectedIndex, items, onSelect]);
 
   const handleNext = useCallback(() => {
-    if (selectedIndex < items.length - 1) {
-      onSelect(selectedIndex + 1);
-    }
-  }, [selectedIndex, items.length, onSelect]);
+    if (!items || items.length <= 1) return;
+    const newIdx = selectedIndex < items.length - 1 ? selectedIndex + 1 : 0;
+    onSelect(newIdx);
+    sound.playCuteClick();
+  }, [selectedIndex, items, onSelect]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -42,51 +46,51 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePrev, handleNext]);
 
-  // Touch gestures for mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-    setDragOffset(0);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
-    const diff = e.touches[0].clientX - touchStartX;
-    setDragOffset(diff);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX === null) return;
-    if (dragOffset > 45 && selectedIndex > 0) {
-      handlePrev();
-    } else if (dragOffset < -45 && selectedIndex < items.length - 1) {
-      handleNext();
-    }
-    setTouchStartX(null);
-    setDragOffset(0);
-  };
-
-  // Mouse gestures for desktop
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Unified Pointer Events for Touch, Trackpad, and Mouse
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!items || items.length <= 1) return;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
     setIsDragging(true);
-    setTouchStartX(e.clientX);
     setDragOffset(0);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || touchStartX === null) return;
-    const diff = e.clientX - touchStartX;
-    setDragOffset(diff);
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || startXRef.current === null) return;
+    const diffX = e.clientX - startXRef.current;
+    setDragOffset(diffX);
   };
 
-  const handleMouseUp = () => {
-    if (!isDragging || touchStartX === null) return;
-    if (dragOffset > 45 && selectedIndex > 0) {
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || startXRef.current === null) {
+      setIsDragging(false);
+      startXRef.current = null;
+      startYRef.current = null;
+      setDragOffset(0);
+      return;
+    }
+
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch {}
+
+    const diffX = e.clientX - startXRef.current;
+    const threshold = 35;
+
+    if (diffX > threshold) {
       handlePrev();
-    } else if (dragOffset < -45 && selectedIndex < items.length - 1) {
+    } else if (diffX < -threshold) {
       handleNext();
     }
+
     setIsDragging(false);
-    setTouchStartX(null);
+    startXRef.current = null;
+    startYRef.current = null;
     setDragOffset(0);
   };
 
@@ -99,14 +103,11 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
       {/* 3D Stage Container */}
       <div
         ref={containerRef}
-        className="relative w-full h-[370px] flex items-center justify-center overflow-visible cursor-grab active:cursor-grabbing perspective-[1200px]"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        className="relative w-full h-[370px] flex items-center justify-center overflow-visible cursor-grab active:cursor-grabbing perspective-[1200px] touch-pan-y"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {items.map((item, index) => {
           const offset = index - selectedIndex;
@@ -115,23 +116,29 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
           // Render at most 2 items to the left and 2 to the right for optimal performance
           if (Math.abs(offset) > 2) return null;
 
-          // Calculate 3D transforms
-          const translateX = offset * 115 + (isDragging ? dragOffset * 0.35 : 0);
-          const translateZ = isCenter ? 60 : -40 * Math.abs(offset);
-          const rotateY = offset * -20;
+          // Calculate dynamic 3D transforms with live drag response
+          const liveShift = isDragging ? dragOffset * 0.75 : 0;
+          const translateX = offset * 125 + liveShift;
+          const translateZ = isCenter ? 60 - Math.abs(liveShift) * 0.15 : -40 * Math.abs(offset);
+          const rotateY = offset * -18 - (isDragging ? dragOffset * 0.06 : 0);
           const scale = isCenter ? 1 : 0.82;
-          const opacity = isCenter ? 1 : Math.abs(offset) === 1 ? 0.55 : 0.2;
+          const opacity = isCenter ? 1 : Math.abs(offset) === 1 ? 0.6 : 0.25;
           const zIndex = 30 - Math.abs(offset) * 10;
 
           return (
             <div
               key={item.id}
-              onClick={() => onSelect(index)}
+              onClick={() => {
+                if (Math.abs(dragOffset) < 8) {
+                  onSelect(index);
+                  sound.playPop();
+                }
+              }}
               style={{
                 transform: `translateX(${translateX}px) translateZ(${translateZ}px) scale(${scale}) rotateY(${rotateY}deg)`,
                 opacity,
                 zIndex,
-                transition: isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease',
+                transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease',
                 willChange: 'transform, opacity',
                 WebkitBackfaceVisibility: 'hidden',
                 backfaceVisibility: 'hidden',
@@ -189,9 +196,8 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
       <div className="flex items-center justify-between px-6 -mt-2">
         <button
           onClick={handlePrev}
-          disabled={selectedIndex === 0}
           aria-label="Previous clothing item"
-          className="w-9 h-9 rounded-full bg-[#272A4B]/80 hover:bg-[#3E437A] disabled:opacity-30 disabled:pointer-events-none border border-[rgba(242,236,221,0.15)] flex items-center justify-center text-[#F2ECDD] transition-all shadow-md active:scale-95"
+          className="w-9 h-9 rounded-full bg-[#272A4B]/80 hover:bg-[#3E437A] border border-[rgba(242,236,221,0.15)] flex items-center justify-center text-[#F2ECDD] transition-all shadow-md active:scale-95"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -213,9 +219,8 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
 
         <button
           onClick={handleNext}
-          disabled={selectedIndex === items.length - 1}
           aria-label="Next clothing item"
-          className="w-9 h-9 rounded-full bg-[#272A4B]/80 hover:bg-[#3E437A] disabled:opacity-30 disabled:pointer-events-none border border-[rgba(242,236,221,0.15)] flex items-center justify-center text-[#F2ECDD] transition-all shadow-md active:scale-95"
+          className="w-9 h-9 rounded-full bg-[#272A4B]/80 hover:bg-[#3E437A] border border-[rgba(242,236,221,0.15)] flex items-center justify-center text-[#F2ECDD] transition-all shadow-md active:scale-95"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
