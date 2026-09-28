@@ -26,14 +26,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: `${basePath}/favicon.png?v=wemi2026`, type: 'image/png' },
-      { url: `${basePath}/favicon.ico?v=wemi2026` },
-      { url: `${basePath}/favicon-32.png?v=wemi2026`, sizes: '32x32', type: 'image/png' },
-      { url: `${basePath}/favicon-16.png?v=wemi2026`, sizes: '16x16', type: 'image/png' },
-      { url: `${basePath}/logo.png?v=wemi2026`, type: 'image/png' },
+      { url: `${basePath}/favicon.png?v=wemi-v5`, type: 'image/png' },
+      { url: `${basePath}/favicon.ico?v=wemi-v5` },
+      { url: `${basePath}/favicon-32.png?v=wemi-v5`, sizes: '32x32', type: 'image/png' },
+      { url: `${basePath}/favicon-16.png?v=wemi-v5`, sizes: '16x16', type: 'image/png' },
+      { url: `${basePath}/logo.png?v=wemi-v5`, type: 'image/png' },
     ],
-    shortcut: `${basePath}/favicon.png?v=wemi2026`,
-    apple: `${basePath}/apple-touch-icon.png?v=wemi2026`,
+    shortcut: `${basePath}/favicon.png?v=wemi-v5`,
+    apple: `${basePath}/apple-touch-icon.png?v=wemi-v5`,
   },
 };
 
@@ -53,12 +53,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="We Milan" />
         <meta name="application-name" content="We Milan" />
         <link rel="manifest" href={`${basePath}/manifest.json`} />
-        <link rel="icon" type="image/png" sizes="32x32" href={`${basePath}/favicon-32.png?v=wemi2026`} />
-        <link rel="icon" type="image/png" sizes="16x16" href={`${basePath}/favicon-16.png?v=wemi2026`} />
-        <link rel="icon" type="image/png" href={`${basePath}/favicon.png?v=wemi2026`} />
-        <link rel="icon" href={`${basePath}/favicon.ico?v=wemi2026`} />
-        <link rel="shortcut icon" href={`${basePath}/favicon.png?v=wemi2026`} />
-        <link rel="apple-touch-icon" sizes="180x180" href={`${basePath}/apple-touch-icon.png?v=wemi2026`} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`${basePath}/favicon-32.png?v=wemi-v5`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`${basePath}/favicon-16.png?v=wemi-v5`} />
+        <link rel="icon" type="image/png" href={`${basePath}/favicon.png?v=wemi-v5`} />
+        <link rel="icon" href={`${basePath}/favicon.ico?v=wemi-v5`} />
+        <link rel="shortcut icon" href={`${basePath}/favicon.png?v=wemi-v5`} />
+        <link rel="apple-touch-icon" sizes="180x180" href={`${basePath}/apple-touch-icon.png?v=wemi-v5`} />
       </head>
       <body>
         <ThemeProvider>

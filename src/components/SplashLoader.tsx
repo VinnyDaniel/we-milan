@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import MoltenMetal from '@/components/reactbits/MoltenMetal';
 import FoldText from '@/components/reactbits/FoldText';
 import { assetPath } from '@/utils/asset';
+import { useTheme } from '@/context/ThemeContext';
 
 interface SplashLoaderProps {
   onComplete: () => void;
@@ -17,6 +18,8 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
   tagline = 'Your wardrobe. Reimagined.'
 }) => {
   const [stage, setStage] = useState<'enter' | 'pulse' | 'exit'>('enter');
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   useEffect(() => {
     // 0ms - 800ms: Logo pops up and scales in
@@ -44,31 +47,33 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
   return (
     <div
       onClick={onComplete}
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#181A31] text-[#F2ECDD] cursor-pointer transition-opacity duration-700 ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-700 ${
+        isLight ? 'bg-[#FAF7F2] text-[#181A31]' : 'bg-[#181A31] text-[#F2ECDD]'
+      } ${
         stage === 'exit' ? 'opacity-0 pointer-events-none scale-105' : 'opacity-100 scale-100'
       }`}
     >
       {/* Background Molten Metal Caustic Canvas from React Bits */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60">
+      <div className={`absolute inset-0 pointer-events-none overflow-hidden ${isLight ? 'opacity-30' : 'opacity-60'}`}>
         <MoltenMetal
-          color1="#181A31"
-          color2="#E44C4E"
-          color3="#CCA166"
+          color1={isLight ? '#FAF7F2' : '#181A31'}
+          color2={isLight ? '#FDA4AF' : '#E44C4E'}
+          color3={isLight ? '#E8D5B5' : '#CCA166'}
           speed={0.4}
           scale={3.5}
           detail={4}
-          glow={1.8}
+          glow={isLight ? 1.2 : 1.8}
           coreSize={0.08}
           swirl={1.2}
           fold={-0.25}
-          blackPoint={0.08}
-          brightness={1.2}
+          blackPoint={isLight ? 0.02 : 0.08}
+          brightness={isLight ? 0.95 : 1.2}
           colorMode="molten"
           grain={true}
           grainIntensity={0.06}
           mouseInteraction={true}
           mouseStrength={0.3}
-          opacity={0.85}
+          opacity={isLight ? 0.4 : 0.85}
         />
       </div>
 
@@ -101,24 +106,30 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
             perspective={800}
             fontSize="2.1rem"
             fontWeight={600}
-            color="#F2ECDD"
+            color={isLight ? '#181A31' : '#F2ECDD'}
             className="font-serif tracking-tight drop-shadow-md"
           />
 
           {/* Subtitle Tagline styled exactly as introductory website */}
           <div className="mt-3">
-            <span className="tagline-cursive text-xl text-[#E2C78C] tracking-wide block">
+            <span className={`tagline-cursive text-xl tracking-wide block ${
+              isLight ? 'text-[#9E7329]' : 'text-[#E2C78C]'
+            }`}>
               The world&apos;s your runway
             </span>
           </div>
         </div>
 
         {/* Minimal loading indicator bar */}
-        <div className="w-32 h-[2px] bg-[rgba(242,236,221,0.15)] rounded-full mt-7 overflow-hidden">
+        <div className={`w-32 h-[2px] rounded-full mt-7 overflow-hidden ${
+          isLight ? 'bg-black/10' : 'bg-[rgba(242,236,221,0.15)]'
+        }`}>
           <div className="h-full bg-gradient-to-r from-[#CCA166] via-[#E44C4E] to-[#CCA166] animate-[marquee_1.8s_ease-in-out_infinite]" />
         </div>
 
-        <span className="mt-4 font-mono text-[10px] text-[#9C9FBE]/75 tracking-wider">
+        <span className={`mt-4 font-mono text-[10px] tracking-wider ${
+          isLight ? 'text-[#6B7280]' : 'text-[#9C9FBE]/75'
+        }`}>
           TAP TO ENTER
         </span>
       </div>
