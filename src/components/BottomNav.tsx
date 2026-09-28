@@ -13,7 +13,6 @@ export const BottomNav: React.FC = () => {
     { label: 'HOME', href: '/', icon: Home },
     { label: 'WARDROBE', href: '/wardrobe', icon: Layers },
     { label: 'SCAN', href: '/scan', icon: PlusCircle, isScan: true },
-    { label: 'STYLE', href: '/style', icon: Sparkles },
     { label: 'TWIN', href: '/twinning', icon: Users },
     { label: 'PROFILE', href: '/profile', icon: User }
   ];

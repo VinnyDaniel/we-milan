@@ -167,7 +167,7 @@ export default function HomePage() {
       } catch {}
     }, 400);
 
-    setCrumpleToast('✨ Paper crumpled! Atelier AI paired a fresh curated look');
+    setCrumpleToast('✨ Paper crumpled! Fresh matching look ready!');
     setTimeout(() => {
       setCrumpleToast(null);
     }, 3200);
@@ -525,14 +525,14 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* ATELIER PAIRED ENSEMBLE: Pieces Grid */}
+          {/* MATCHING OUTFIT: Pieces Grid */}
           <div className="space-y-1.5 my-3">
             <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#9C9FBE] block font-semibold">
-              Atelier Paired Pieces ({currentOutfit.pairing?.colorHarmony || 'Tonal Balance'})
+              Matching Pieces ({currentOutfit.pairing?.colorHarmony || 'Tonal Balance'})
             </span>
 
             <div className="grid grid-cols-3 gap-2.5">
-              {/* Top / Anchor */}
+              {/* Top / Main Piece */}
               {currentOutfit.top && (
                 <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                   <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
@@ -543,7 +543,7 @@ export default function HomePage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <span className="absolute top-1 left-1 bg-[#E44C4E] text-[#181A31] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
-                      Anchor
+                      Main Piece
                     </span>
                   </div>
                   <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -556,7 +556,7 @@ export default function HomePage() {
                 </div>
               )}
 
-              {/* Bottom / Pairing */}
+              {/* Bottom / Matches With */}
               {currentOutfit.bottom && (
                 <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                   <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
@@ -567,7 +567,7 @@ export default function HomePage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
-                      Pairing
+                      Matches With
                     </span>
                   </div>
                   <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -580,7 +580,7 @@ export default function HomePage() {
                 </div>
               )}
 
-              {/* Shoes / Pairing */}
+              {/* Shoes / Matches With */}
               {currentOutfit.shoe && (
                 <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                   <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)] relative">
@@ -591,7 +591,7 @@ export default function HomePage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7px] uppercase font-bold px-1.5 py-0.2 rounded-full">
-                      Pairing
+                      Matches With
                     </span>
                   </div>
                   <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -606,10 +606,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* "Why this works" Editorial Breakdown */}
+          {/* "Why this works" Breakdown */}
           <div className="bg-[#181A31]/80 rounded-2xl p-3.5 border border-[rgba(242,236,221,0.08)] space-y-2 my-3">
             <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#CCA166] block font-semibold">
-              Why this paired ensemble works
+              Why this outfit works
             </span>
             <p className="font-sans text-xs text-[#F2ECDD] leading-relaxed italic">
               &ldquo;{currentOutfit.pairing?.pairingRationale || `Harmonized around your ${currentOutfit.top?.name}. Anchored with balanced silhouette and tonal contrast.`}&rdquo;

@@ -95,7 +95,7 @@ export default function ProfilePage() {
   const handleSaveProfile = (updates: Partial<UserProfile>) => {
     const updated = StorageService.saveUserProfile(updates);
     setProfile(updated);
-    triggerToast('Atelier profile, age, gender & security updated!');
+    triggerToast('Profile updated successfully!');
   };
 
   const triggerToast = (msg: string) => {
@@ -119,11 +119,11 @@ export default function ProfilePage() {
   };
 
   const buildShareDossierText = () => {
-    return `✦ WE MILAN — Atelier Curator Dossier ✦
-Curator: ${profile.name} (@${userHandle})
+    return `✦ WE MILAN — Style Profile ✦
+Member: ${profile.name} (@${userHandle})
 Identity: ${profile.gender || 'Non-binary'} • Age: ${profile.age || 24} • ${profile.location || 'Milan, Italy'}
 Aesthetic: ${profile.aesthetic || 'Milano Minimalist & Tactile Tailoring'}
-Ethos: ${profile.bio || 'Tactile tailoring, archival palettes & climate-adaptive layering.'}
+Bio: ${profile.bio || 'Tactile tailoring, archival palettes & climate-adaptive layering.'}
 
 📐 Sizing & Fit Specs:
 • Top / Jacket: ${measurements.topSize}
@@ -142,7 +142,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
   const handleShareDossier = async () => {
     const shareText = buildShareDossierText();
     const shareData = {
-      title: `${profile.name} — We Milan Atelier Dossier`,
+      title: `${profile.name} — We Milan Style Profile`,
       text: shareText,
       url: `https://wemilan.app/u/${userHandle}`
     };
@@ -150,7 +150,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share(shareData);
-        triggerToast('Dossier shared successfully!');
+        triggerToast('Profile shared successfully!');
         return;
       } catch (err) {
         // Fall back to clipboard if user dismissed or unsupported
@@ -194,7 +194,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
           <button
             onClick={handleShareDossier}
             className="w-8 h-8 rounded-full bg-[#272A4B] border border-[rgba(242,236,221,0.12)] flex items-center justify-center text-[#CCA166] hover:text-[#F2ECDD] transition-colors"
-            title="Share Atelier Dossier"
+            title="Share Profile"
           >
             <Share2 className="w-4 h-4" />
           </button>
@@ -350,7 +350,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
             <div className="flex items-center gap-2">
               <Ruler className="w-4 h-4 text-[#CCA166]" />
               <h3 className="font-serif text-sm font-medium text-[#F2ECDD]">
-                Atelier Sizing & Fit Specs
+                Sizing & Fit Profile
               </h3>
             </div>
             <button
@@ -457,7 +457,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
           >
             <div className="flex items-center justify-center gap-2">
               <Share2 className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>Share Style & Sizing Dossier</span>
+              <span>Share Style & Sizing Profile</span>
             </div>
           </StarBorder>
         </div>
@@ -466,7 +466,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[#CCA166] font-semibold">
-              Biometric & Sensory Telemetry
+              Smart Wearable & Mood Sync
             </span>
             <button
               onClick={handleSimulatePair}
@@ -580,7 +580,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
         <div className="bg-[#272A4B]/70 border border-[rgba(242,236,221,0.12)] rounded-3xl p-4 flex items-center justify-between">
           <div>
             <span className="font-mono text-[9px] uppercase tracking-wider text-[#CCA166] block">
-              Atelier Ambience
+              App Theme
             </span>
             <span className="font-serif text-sm font-medium text-[#F2ECDD] block mt-0.5">
               App Appearance

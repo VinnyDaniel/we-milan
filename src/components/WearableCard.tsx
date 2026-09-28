@@ -82,7 +82,7 @@ export const WearableCard: React.FC<WearableCardProps> = ({
           </div>
         </div>
 
-        {/* Mood & Telemetry Readout */}
+        {/* Mood & Activity Readout */}
         <div className="mt-3 flex items-center justify-between">
           <div>
             <div className="flex items-baseline gap-2">
@@ -90,13 +90,13 @@ export const WearableCard: React.FC<WearableCardProps> = ({
                 {wearable.mood}
               </span>
               <span className="font-mono text-xs text-[#CCA166]">
-                · {wearable.confidence}% confidence
+                · {wearable.confidence}% match
               </span>
             </div>
             <p className="font-sans text-[11px] text-[#9C9FBE] mt-0.5">
               {isManual
-                ? 'Calibrated via sensory comfort questionnaire'
-                : 'Wearable telemetry signaling relaxed posture'}
+                ? 'Selected manually to match your style'
+                : 'Synced from your wearable smart band'}
             </p>
           </div>
 

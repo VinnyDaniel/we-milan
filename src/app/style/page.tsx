@@ -164,7 +164,7 @@ function StyleMeContent() {
   const handleCrumpleSuggestAnotherLook = () => {
     if (!weather || !wearable) return;
     sound.playDissolve();
-    setCrumpleToast('✨ Paper crumpled! Atelier AI synthesizing alternative look...');
+    setCrumpleToast('✨ Paper crumpled! Finding another matching look...');
 
     // Rotate vibe to suggest a distinct alternative look
     const vibeList: VibeType[] = ['Minimal', 'Elegant', 'Street', 'Comfy', 'Bold', 'Effortless'];
@@ -182,7 +182,7 @@ function StyleMeContent() {
           occasion,
           vibe: nextVibe,
           mood,
-          notes: customNote ? `${customNote} (Alternative Ensemble)` : 'Alternative Look'
+          notes: customNote ? `${customNote} (Alternative Look)` : 'Alternative Look'
         },
         wardrobe,
         weather,
@@ -211,7 +211,7 @@ function StyleMeContent() {
                 onClick={() => setAnchorItem(null)}
                 className="font-mono text-[9px] text-[#E44C4E] hover:underline px-2 py-1 rounded bg-[#272A4B]/60"
               >
-                Clear Anchor
+                Clear Main Item
               </button>
             )}
           </div>
@@ -226,7 +226,7 @@ function StyleMeContent() {
           </button>
           <div>
             <div className="eyebrow">
-              Atelier Intelligence &bull; AI Stylist
+              Stylist AI &bull; Outfit Matcher
             </div>
             <h1 className="font-serif text-xl font-medium text-[#F2ECDD] tracking-tight">
               {anchorItem ? (
@@ -369,7 +369,7 @@ function StyleMeContent() {
                   {isGenerating ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>SYNTHESIZING OUTFIT...</span>
+                      <span>MATCHING YOUR OUTFIT...</span>
                     </>
                   ) : (
                     <>
@@ -423,7 +423,7 @@ function StyleMeContent() {
             {/* View Mode Toggle: Tactile 3D Lookbook (PaperCrumple) vs Pieces Grid */}
             <div className="flex items-center justify-between bg-[#272A4B]/80 p-1 rounded-2xl border border-[rgba(242,236,221,0.12)]">
               <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] pl-2">
-                Ensemble Presentation
+                Outfit View
               </span>
 
               <div className="flex items-center gap-1">

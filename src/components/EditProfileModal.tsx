@@ -133,10 +133,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif text-lg font-medium text-[#F2ECDD] leading-none">
-                Edit Atelier Profile
+                Edit Profile
               </h3>
               <p className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] mt-1">
-                Persona, Identity & Credentials
+                Profile, Identity & Password
               </p>
             </div>
           </div>
@@ -198,13 +198,13 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             <div className="space-y-3.5 animate-fadeIn">
               <div>
                 <label className="block font-mono text-[10px] uppercase tracking-wider text-[#CCA166] mb-1 font-semibold">
-                  Curator Display Name
+                  Display Name
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Milanista Curator"
+                  placeholder="e.g. Milanista"
                   className="w-full bg-[#272A4B] border border-[rgba(242,236,221,0.15)] rounded-xl px-3 py-2 text-xs text-[#F2ECDD] font-sans focus:outline-none focus:border-[#CCA166]"
                   required
                 />
@@ -212,7 +212,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
               <div>
                 <label className="block font-mono text-[10px] uppercase tracking-wider text-[#CCA166] mb-1 font-semibold">
-                  Atelier Handle
+                  Username Handle
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2 font-mono text-xs text-[#9C9FBE]">@</span>
@@ -228,7 +228,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
               <div>
                 <label className="block font-mono text-[10px] uppercase tracking-wider text-[#CCA166] mb-1 font-semibold">
-                  Location / Fashion Capital
+                  Location / City
                 </label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-2.5 w-3.5 h-3.5 text-[#9C9FBE]" />
@@ -261,7 +261,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
               <div>
                 <label className="block font-mono text-[10px] uppercase tracking-wider text-[#CCA166] mb-1 font-semibold">
-                  Atelier Ethos / Bio
+                  Bio
                 </label>
                 <textarea
                   value={bio}
@@ -389,7 +389,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                     Account Security & Credentials
                   </h4>
                   <p className="font-sans text-[10px] text-[#9C9FBE]">
-                    Update your master atelier password for synchronizing your wardrobe across devices.
+                    Update your password for synchronizing your wardrobe across devices.
                   </p>
                 </div>
               </div>

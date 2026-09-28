@@ -101,7 +101,7 @@ export const MeasurementsModal: React.FC<MeasurementsModalProps> = ({
                 Sizing & Fit Specifications
               </h3>
               <p className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] mt-1">
-                Atelier Tailoring Metrics
+                Body Measurements & Sizing
               </p>
             </div>
           </div>

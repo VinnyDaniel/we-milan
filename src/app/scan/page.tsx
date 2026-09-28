@@ -215,7 +215,7 @@ export default function ScanPage() {
       seasons: seasons.split(',').map((s) => s.trim()).filter(Boolean),
       imageUrl: selectedImage, // Actual uploaded image
       laundryStatus,
-      notes: `Identified by We Milan Atelier (${patternType}, ${exactColor?.palette || 'Curated'})`,
+      notes: `Saved to We Milan (${patternType}, ${exactColor?.palette || 'Curated'})`,
       colorMetrics: exactColor ? {
         hex: exactColor.hex,
         palette: exactColor.palette,
@@ -276,10 +276,10 @@ export default function ScanPage() {
           </button>
           <div>
             <div className="eyebrow">
-              Computer Vision &bull; Archive Ingestion
+              Wardrobe &bull; Add Clothing
             </div>
             <h1 className="font-serif text-xl font-medium text-[#F2ECDD] tracking-tight">
-              Ingest into <em>Wardrobe</em>
+              Add to <em>Wardrobe</em>
             </h1>
           </div>
         </div>
@@ -449,7 +449,7 @@ export default function ScanPage() {
                 <div className="flex items-center justify-between pb-2 border-b border-[rgba(242,236,221,0.1)]">
                   <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#CCA166] font-semibold flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-[#E44C4E]" />
-                    <span>Garment Profile Identified</span>
+                    <span>Item Details</span>
                   </span>
                   <span className="font-mono text-[9px] text-[#9C9FBE]">
                     Tap any field to edit
@@ -459,7 +459,7 @@ export default function ScanPage() {
                 {/* Clothing Name */}
                 <div>
                   <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
-                    Garment Name
+                    Item Name
                   </label>
                   <input
                     type="text"
@@ -491,7 +491,7 @@ export default function ScanPage() {
 
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
-                      Pattern / Weave
+                      Pattern
                     </label>
                     <input
                       type="text"
@@ -508,7 +508,7 @@ export default function ScanPage() {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="font-mono text-[9px] uppercase tracking-wider text-[#CCA166]">
-                      Detected Pattern: {patternType}
+                      Pattern: {patternType}
                     </span>
                     <span className="font-mono text-[9px] text-[#9C9FBE]">
                       Tap to switch pattern
@@ -640,18 +640,18 @@ export default function ScanPage() {
                   />
                 </div>
 
-                {/* FEATURE 9 & 10: ATELIER OUTFIT PAIRING */}
+                {/* MATCHING OUTFIT PAIRING */}
                 {pairedOutfit && (
                   <div className="bg-[#181A31]/95 border border-[#CCA166]/30 rounded-2xl p-3.5 space-y-3 shadow-lg animate-fadeIn">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-[#CCA166]" />
                         <span className="font-serif text-xs font-semibold text-[#F2ECDD] tracking-wide">
-                          Atelier Paired Ensemble
+                          Matching Outfit
                         </span>
                       </div>
                       <span className="font-mono text-[9px] bg-[#CCA166]/15 text-[#CCA166] border border-[#CCA166]/30 px-2 py-0.5 rounded-full font-bold">
-                        {pairedOutfit.harmonyScore}% Harmony · {pairedOutfit.colorHarmony}
+                        {pairedOutfit.harmonyScore}% Match · {pairedOutfit.colorHarmony}
                       </span>
                     </div>
 
@@ -659,12 +659,12 @@ export default function ScanPage() {
                       {pairedOutfit.pairingRationale}
                     </p>
 
-                    {/* Ensemble Visual Preview: Anchor + Paired Pieces */}
+                    {/* Outfit Visual Preview: Main Piece + Matching Pieces */}
                     <div className="grid grid-cols-3 gap-2 pt-1">
-                      {/* Anchor Scanned Piece */}
+                      {/* Main Scanned Piece */}
                       <div className="relative bg-[#272A4B] rounded-xl p-2 border border-[#CCA166]/40 flex flex-col items-center text-center">
                         <span className="absolute top-1 left-1 bg-[#E44C4E] text-[#181A31] font-mono text-[7.5px] uppercase font-bold px-1.5 py-0.2 rounded-full">
-                          Anchor
+                          Main Piece
                         </span>
                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 my-1">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -689,7 +689,7 @@ export default function ScanPage() {
                           className="relative bg-[#272A4B]/70 rounded-xl p-2 border border-[rgba(242,236,221,0.1)] flex flex-col items-center text-center"
                         >
                           <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7.5px] uppercase font-semibold px-1.5 py-0.2 rounded-full">
-                            Pairing
+                            Matches With
                           </span>
                           <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 my-1">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -722,7 +722,7 @@ export default function ScanPage() {
                         className="text-[10px] font-mono text-[#CCA166] hover:text-[#F2ECDD] flex items-center gap-1 transition-colors"
                       >
                         <RefreshCw className={`w-3 h-3 ${pairingLoading ? 'animate-spin' : ''}`} />
-                        <span>Shuffle Pairing</span>
+                        <span>Shuffle Match</span>
                       </button>
 
                       <button
@@ -739,7 +739,7 @@ export default function ScanPage() {
                             seasons: seasons.split(',').map((s) => s.trim()).filter(Boolean),
                             imageUrl: selectedImage || '',
                             laundryStatus,
-                            notes: `Paired Look Ensemble (${pairedOutfit.colorHarmony})`
+                            notes: `Matched Outfit (${pairedOutfit.colorHarmony})`
                           });
                           confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
                           router.push('/style');
@@ -753,7 +753,7 @@ export default function ScanPage() {
                   </div>
                 )}
 
-                {/* StarBorder ADD TO WARDROBE Button */}
+                {/* StarBorder SAVE TO WARDROBE Button */}
                 <div className="pt-2">
                   <StarBorder
                     as="button"
@@ -769,12 +769,12 @@ export default function ScanPage() {
                       {isSuccess ? (
                         <>
                           <Check className="w-4 h-4 stroke-[3]" />
-                          <span>ADDED TO DIGITAL WARDROBE!</span>
+                          <span>SAVED TO WARDROBE!</span>
                         </>
                       ) : (
                         <>
                           <Layers className="w-4 h-4" />
-                          <span>CONFIRM & ADD TO WARDROBE</span>
+                          <span>SAVE TO WARDROBE</span>
                         </>
                       )}
                     </div>
