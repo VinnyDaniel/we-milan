@@ -39,6 +39,7 @@ import {
   Users
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import OnboardingWizard from '@/components/OnboardingWizard';
 
 export default function HomePage() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function HomePage() {
   // App lifecycle states
   const [showSplash, setShowSplash] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [authMode, setAuthMode] = useState<'welcome' | 'signin' | 'signup'>('welcome');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -161,16 +163,22 @@ export default function HomePage() {
     }, 2800);
   };
 
+
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const current = StorageService.getUserProfile();
+    // Save email immediately so the wizard can access it
     StorageService.saveUserProfile({
-      name: current.name || email.split('@')[0] || 'Milan Member',
-      email: email || current.email || 'user@wemilan.com',
-      password: password || current.password || 'milan2026',
-      isGuest: false
+      email: email || 'user@wemilan.com',
+      password: password || 'milan2026',
+      isGuest: false,
     });
-    setIsAuthenticated(true);
+    // New sign-ups go through the personalization wizard
+    if (authMode === 'signup') {
+      setNeedsOnboarding(true);
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(true);
+    }
   };
 
   const handleGuestEntry = () => {
@@ -372,6 +380,16 @@ export default function HomePage() {
           )}
         </div>
       </div>
+    );
+  }
+
+  // 2.5 Personalization Onboarding (new sign-ups only)
+  if (isAuthenticated && needsOnboarding) {
+    return (
+      <OnboardingWizard
+        email={email}
+        onComplete={() => setNeedsOnboarding(false)}
+      />
     );
   }
 
