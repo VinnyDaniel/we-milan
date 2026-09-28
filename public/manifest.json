@@ -1,0 +1,55 @@
+{
+  "name": "We Milan — Smart Wardrobe",
+  "short_name": "We Milan",
+  "description": "AI-powered smart wardrobe and personal styling assistant. The world's your runway.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#181A31",
+  "theme_color": "#181A31",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "280x280",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["lifestyle", "fashion", "shopping"],
+  "shortcuts": [
+    {
+      "name": "Scan Clothing",
+      "short_name": "Scan",
+      "description": "Add new clothing to wardrobe",
+      "url": "scan/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Twin Outfits",
+      "short_name": "Twin",
+      "description": "Collaborate and match outfits with friends",
+      "url": "twinning/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Wardrobe",
+      "short_name": "Wardrobe",
+      "description": "Browse your digital wardrobe",
+      "url": "wardrobe/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import MeasurementsModal from '@/components/MeasurementsModal';
 import EditProfileModal from '@/components/EditProfileModal';
 import ThemeToggle from '@/components/ThemeToggle';
 import SoundToggle from '@/components/SoundToggle';
+import { InstallAppTile } from '@/components/PWAInstallPrompt';
 import { 
   Bluetooth, 
   Droplets, 
@@ -576,7 +577,10 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
           </div>
         )}
 
-        {/* Atelier Atmosphere & Theme Setting */}
+        {/* Download & Install Application */}
+        <InstallAppTile />
+
+        {/* Atmosphere & Theme Setting */}
         <div className="bg-[#272A4B]/70 border border-[rgba(242,236,221,0.12)] rounded-3xl p-4 flex items-center justify-between">
           <div>
             <span className="font-mono text-[9px] uppercase tracking-wider text-[#CCA166] block">
