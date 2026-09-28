@@ -124,7 +124,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl max-w-md w-full p-5 text-[#F2ECDD] relative shadow-2xl max-h-[92vh] overflow-y-auto scrollbar-none flex flex-col">
+      <div className="bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl max-w-md w-full p-5 text-[#F2ECDD] relative shadow-2xl max-h-[92vh] overflow-y-auto scrollbar-none flex flex-col modal-enter">
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[rgba(242,236,221,0.1)] shrink-0">
           <div className="flex items-center gap-2">

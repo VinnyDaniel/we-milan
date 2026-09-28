@@ -40,31 +40,111 @@ body {
   transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Global button & interactive element smoothness */
-button,
-a,
-input,
-select,
-textarea,
-[role="button"] {
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  outline: none;
+/* ========================================================
+   FLUID HARDWARE-ACCELERATED SCROLLING SYSTEM
+   ======================================================== */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:active,
-a:active,
-[role="button"]:active {
-  transform: scale(0.975);
-  transition-duration: 0.1s;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar hiding utilities */
+/* Custom Scrollbar hiding utilities with momentum and overscroll control */
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto,
+[data-scrollable],
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.overflow-y-auto {
+  touch-action: pan-y;
+}
+
+.overflow-x-auto {
+  touch-action: pan-x;
+}
+
+/* ========================================================
+   TACTILE & FLUID INTERACTION PHYSICS
+   ======================================================== */
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.18s ease;
+  transform: translateZ(0);
+  outline: none;
+}
+
+button:active,
+a:active,
+[role="button"]:active {
+  transform: scale(0.962) translateZ(0);
+  transition-duration: 0.08s;
+}
+
+/* Smoother focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(204, 161, 102, 0.65);
+  outline-offset: 2px;
+}
+
+/* Page glider transition */
+@keyframes pageGlider {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.994);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.page-enter {
+  animation: pageGlider 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+/* Modal and dialog spring entrance */
+@keyframes modalGlider {
+  0% {
+    opacity: 0;
+    transform: scale(0.93) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-enter {
+  animation: modalGlider 0.3s cubic-bezier(0.16, 1.15, 0.3, 1) both;
+  will-change: opacity, transform;
 }
 
 /* 3D Transform Utilities */

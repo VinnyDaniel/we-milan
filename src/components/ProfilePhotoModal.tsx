@@ -166,7 +166,7 @@ export const ProfilePhotoModal: React.FC<ProfilePhotoModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl max-w-sm w-full p-5 text-[#F2ECDD] relative shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl max-w-sm w-full p-5 text-[#F2ECDD] relative shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
         {/* Shutter Flash Animation */}
         {isCapturing && (
           <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-[fadeOut_0.3s_ease-out_forwards]" />

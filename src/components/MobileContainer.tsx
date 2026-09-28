@@ -112,8 +112,11 @@ export const MobileContainer: React.FC<MobileContainerProps> = ({ children }) =>
           />
         </div>
 
-        {/* Application content container */}
-        <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col z-10">
+        {/* Application content container with smooth view transition */}
+        <div
+          key={pathname}
+          className="flex-1 min-h-0 overflow-hidden relative flex flex-col z-10 page-enter"
+        >
           {children}
         </div>
       </div>

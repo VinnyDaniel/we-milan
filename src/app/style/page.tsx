@@ -278,7 +278,7 @@ function StyleMeContent() {
                       key={occ}
                       type="button"
                       onClick={() => setOccasion(occ)}
-                      className={`px-3 py-1.5 rounded-full font-mono text-[11px] transition-all ${
+                      className={`px-3 py-1.5 rounded-full font-mono text-[11px] transition-all duration-200 active:scale-95 ${
                         isSelected
                           ? 'bg-[#E44C4E] text-[#181A31] font-bold shadow-sm'
                           : 'bg-[#181A31] text-[#9C9FBE] hover:text-[#F2ECDD] border border-[rgba(242,236,221,0.1)]'
@@ -304,7 +304,7 @@ function StyleMeContent() {
                       key={v}
                       type="button"
                       onClick={() => setVibe(v)}
-                      className={`px-3 py-1.5 rounded-full font-mono text-[11px] transition-all ${
+                      className={`px-3 py-1.5 rounded-full font-mono text-[11px] transition-all duration-200 active:scale-95 ${
                         isSelected
                           ? 'bg-[#CCA166] text-[#181A31] font-bold shadow-sm'
                           : 'bg-[#181A31] text-[#9C9FBE] hover:text-[#F2ECDD] border border-[rgba(242,236,221,0.1)]'

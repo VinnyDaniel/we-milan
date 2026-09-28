@@ -712,7 +712,7 @@ export default function HomePage() {
         <div className="grid grid-cols-3 gap-2.5 pt-1">
           <Link
             href="/wardrobe"
-            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center transition-all group shadow-sm"
+            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center card-hover group shadow-sm active:scale-95"
           >
             <div className="w-9 h-9 rounded-xl bg-[#3E437A]/50 text-[#CCA166] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
               <Layers className="w-5 h-5" />
@@ -727,7 +727,7 @@ export default function HomePage() {
 
           <Link
             href="/style"
-            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center transition-all group shadow-sm"
+            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center card-hover group shadow-sm active:scale-95"
           >
             <div className="w-9 h-9 rounded-xl bg-[#E44C4E]/20 text-[#E44C4E] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
               <Sparkles className="w-5 h-5" />
@@ -742,7 +742,7 @@ export default function HomePage() {
 
           <Link
             href="/scan"
-            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center transition-all group shadow-sm"
+            className="bg-[#272A4B]/70 hover:bg-[#272A4B] border border-[rgba(242,236,221,0.12)] rounded-2xl p-3 flex flex-col items-center text-center card-hover group shadow-sm active:scale-95"
           >
             <div className="w-9 h-9 rounded-xl bg-[#CCA166]/20 text-[#CCA166] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
               <Camera className="w-5 h-5" />

@@ -655,7 +655,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
       {/* Connect with Friends on Different Platforms Modal */}
       {isConnectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-[380px] bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl p-5 shadow-2xl relative text-[#F2ECDD]">
+          <div className="w-full max-w-[380px] bg-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl p-5 shadow-2xl relative text-[#F2ECDD] modal-enter">
             <button
               onClick={() => setIsConnectModalOpen(false)}
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#272A4B] text-[#9C9FBE] hover:text-[#F2ECDD] flex items-center justify-center border border-[rgba(242,236,221,0.1)] transition-colors"

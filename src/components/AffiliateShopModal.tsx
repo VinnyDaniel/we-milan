@@ -23,7 +23,7 @@ export const AffiliateShopModal: React.FC<AffiliateShopModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#181A31]/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-[390px] bg-gradient-to-b from-[#272A4B] to-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl p-5 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
+      <div className="relative w-full max-w-[390px] bg-gradient-to-b from-[#272A4B] to-[#181A31] border border-[rgba(242,236,221,0.2)] rounded-3xl p-5 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col modal-enter">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[rgba(242,236,221,0.1)]">
           <div className="flex items-center gap-2">

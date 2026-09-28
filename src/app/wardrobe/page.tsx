@@ -193,7 +193,7 @@ export default function WardrobePage() {
       </div>
 
       {/* FEATURE 4 — CLOTHING CATEGORIES STRIP */}
-      <div className="px-4 py-3 overflow-x-auto scrollbar-none border-b border-[rgba(242,236,221,0.06)] bg-[#181A31]/50 shrink-0 z-10">
+      <div className="px-4 py-3 overflow-x-auto scrollbar-none border-b border-[rgba(242,236,221,0.06)] bg-[#181A31]/50 shrink-0 z-10 scroll-smooth touch-pan-x overscroll-x-contain">
         <div className="flex items-center gap-1.5 min-w-max">
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat;
@@ -201,7 +201,7 @@ export default function WardrobePage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-full font-mono text-[10px] tracking-wider transition-all uppercase ${
+                className={`px-3 py-1.5 rounded-full font-mono text-[10px] tracking-wider transition-all duration-200 active:scale-95 uppercase ${
                   isSelected
                     ? 'bg-[#CCA166] text-[#181A31] font-bold shadow-sm'
                     : 'bg-[#272A4B]/60 text-[#9C9FBE] hover:text-[#F2ECDD] border border-[rgba(242,236,221,0.08)]'

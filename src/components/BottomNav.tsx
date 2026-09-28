@@ -44,7 +44,7 @@ export const BottomNav: React.FC = () => {
                 className="group flex flex-col items-center -mt-5"
                 title="Scan Clothing"
               >
-                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#E44C4E] to-[#CCA166] text-[#181A31] flex items-center justify-center shadow-[0_8px_20px_rgba(228,76,78,0.4)] group-hover:scale-105 active:scale-95 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#E44C4E] to-[#CCA166] text-[#181A31] flex items-center justify-center shadow-[0_8px_20px_rgba(228,76,78,0.4)] group-hover:scale-105 active:scale-90 transition-transform duration-200">
                   <Icon className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <span className="font-mono text-[9px] tracking-wider text-[#CCA166] font-semibold mt-1">
@@ -61,7 +61,7 @@ export const BottomNav: React.FC = () => {
               onClick={() => {
                 if (!isActive) sound.playTransition();
               }}
-              className={`flex flex-col items-center py-1 px-1.5 rounded-xl transition-all ${
+              className={`flex flex-col items-center py-1 px-1.5 rounded-xl transition-all duration-200 active:scale-90 ${
                 isActive
                   ? 'text-[#CCA166]'
                   : isLight
@@ -70,19 +70,19 @@ export const BottomNav: React.FC = () => {
               }`}
             >
               <Icon
-                className={`w-5 h-5 transition-transform ${
+                className={`w-5 h-5 transition-transform duration-200 ${
                   isActive ? 'scale-110 stroke-[2.3]' : 'stroke-[1.8]'
                 }`}
               />
               <span
-                className={`font-mono text-[9px] tracking-wider mt-1 ${
+                className={`font-mono text-[9px] tracking-wider mt-1 transition-colors duration-200 ${
                   isActive ? 'font-semibold text-[#CCA166]' : 'font-normal'
                 }`}
               >
                 {item.label}
               </span>
               {isActive && (
-                <div className="w-1 h-1 rounded-full bg-[#E44C4E] mt-0.5" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#E44C4E] mt-0.5 shadow-[0_0_8px_rgba(228,76,78,0.7)] animate-fadeIn" />
               )}
             </Link>
           );

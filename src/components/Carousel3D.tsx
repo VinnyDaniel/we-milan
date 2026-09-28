@@ -131,7 +131,10 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({
                 transform: `translateX(${translateX}px) translateZ(${translateZ}px) scale(${scale}) rotateY(${rotateY}deg)`,
                 opacity,
                 zIndex,
-                transition: isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.45s ease',
+                transition: isDragging ? 'none' : 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease',
+                willChange: 'transform, opacity',
+                WebkitBackfaceVisibility: 'hidden',
+                backfaceVisibility: 'hidden',
               }}
               className="absolute w-[220px] h-[310px] rounded-[24px] overflow-hidden bg-[#272A4B] border border-[rgba(242,236,221,0.18)] shadow-[0_20px_45px_-10px_rgba(0,0,0,0.7)] group cursor-pointer transition-shadow"
             >

@@ -388,14 +388,14 @@ export default function TwinningPage() {
               </div>
 
               {/* Friends Horizontal Selector Chips */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none scroll-smooth touch-pan-x overscroll-x-contain">
                 {friends.map((friend) => {
                   const isSelected = selectedFriendIds.includes(friend.id);
                   return (
                     <button
                       key={friend.id}
                       onClick={() => toggleSelectFriend(friend.id)}
-                      className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
+                      className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200 active:scale-95 ${
                         isSelected
                           ? 'bg-[#CCA166] text-[#181A31] border-[#CCA166] font-bold shadow-md'
                           : 'bg-[#181A31] text-[#F2ECDD] border-[rgba(242,236,221,0.12)] hover:border-[#CCA166]/40'
