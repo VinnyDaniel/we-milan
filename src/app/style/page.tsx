@@ -66,6 +66,7 @@ function StyleMeContent() {
   const [isWorn, setIsWorn] = useState(false);
   const [isDissolving, setIsDissolving] = useState(false);
   const [lookbookMode, setLookbookMode] = useState<'crumple' | 'grid'>('crumple');
+  const [crumpleToast, setCrumpleToast] = useState<string | null>(null);
 
   // Affiliate modal state
   const [isAffiliateOpen, setIsAffiliateOpen] = useState(false);
@@ -158,6 +159,41 @@ function StyleMeContent() {
   const handleSaveOutfit = () => {
     setIsSaved(true);
     sound.playSuccess();
+  };
+
+  const handleCrumpleSuggestAnotherLook = () => {
+    if (!weather || !wearable) return;
+    sound.playDissolve();
+    setCrumpleToast('✨ Paper crumpled! Atelier AI synthesizing alternative look...');
+
+    // Rotate vibe to suggest a distinct alternative look
+    const vibeList: VibeType[] = ['Minimal', 'Elegant', 'Street', 'Comfy', 'Bold', 'Effortless'];
+    const currentVibeIdx = vibeList.indexOf(vibe);
+    const nextVibe = vibeList[(currentVibeIdx + 1) % vibeList.length];
+    setVibe(nextVibe);
+
+    setIsWorn(false);
+    setIsSaved(false);
+
+    setTimeout(() => {
+      const nextResult = GeminiService.generateOutfit(
+        {
+          anchorItem: anchorItem || undefined,
+          occasion,
+          vibe: nextVibe,
+          mood,
+          notes: customNote ? `${customNote} (Alternative Ensemble)` : 'Alternative Look'
+        },
+        wardrobe,
+        weather,
+        wearable
+      );
+      setRecommendation(nextResult);
+      sound.playSuccess();
+      setTimeout(() => {
+        setCrumpleToast(null);
+      }, 2600);
+    }, 400);
   };
 
   return (
@@ -441,8 +477,16 @@ function StyleMeContent() {
                         </span>
                       </div>
 
+                      {/* Floating Crumple Toast Banner */}
+                      {crumpleToast && (
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-[#E44C4E] text-[#181A31] font-sans font-bold text-[11px] px-3.5 py-1.5 rounded-full shadow-2xl flex items-center gap-1.5 animate-fadeIn border border-[#F2ECDD]/20">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>{crumpleToast}</span>
+                        </div>
+                      )}
+
                       {/* PaperCrumple 3D Interactive Component */}
-                      <div className="flex justify-center items-center py-1 overflow-hidden" style={{ minHeight: '380px' }}>
+                      <div className="flex justify-center items-center py-1 overflow-hidden relative" style={{ minHeight: '380px' }}>
                         <PaperCrumple
                           src={heroPiece.imageUrl}
                           alt={heroPiece.name}
@@ -461,12 +505,13 @@ function StyleMeContent() {
                           paperTexture={0.08}
                           draggable={true}
                           returnToOrigin={true}
+                          onCrumple={handleCrumpleSuggestAnotherLook}
                         />
                       </div>
 
                       <div className="flex items-center justify-center gap-1.5 bg-[#181A31]/90 border border-[rgba(242,236,221,0.1)] rounded-full py-1.5 px-3 font-mono text-[9px] text-[#CCA166]">
-                        <Hand className="w-3 h-3 text-[#E44C4E] animate-bounce" />
-                        <span>Interactive 3D Physics: Drag & pull to crumple or fold your lookbook print</span>
+                        <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
+                        <span>Crumple paper to suggest another look • Drag to fold</span>
                       </div>
 
                       {/* Miniature items list below 3D card */}

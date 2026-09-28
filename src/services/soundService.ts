@@ -237,6 +237,33 @@ class SoundService {
       noise.stop(ctx.currentTime + 0.46);
     } catch {}
   }
+
+  /**
+   * Crisp acoustic card shuffle for outfit remixing & randomizations
+   */
+  public playShuffle(): void {
+    if (this.isMuted) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const times = [0, 0.04, 0.08, 0.12];
+      times.forEach((t) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300 + Math.random() * 200, ctx.currentTime + t);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.035);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime + t);
+        osc.stop(ctx.currentTime + t + 0.04);
+      });
+    } catch {}
+  }
 }
 
 export const sound = new SoundService();

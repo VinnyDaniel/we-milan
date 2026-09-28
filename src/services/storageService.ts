@@ -9,21 +9,24 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     id: 'wm-01',
     name: 'White Linen Shirt',
     category: 'TOPS',
-    colour: 'White',
-    fabric: 'Linen',
+    colour: 'Crisp Alabaster White',
+    pattern: 'Solid Minimalist',
+    fabric: 'Slub Linen',
     style: 'Minimal / Casual',
     occasions: ['College', 'Travel', 'Casual', 'Work'],
     seasons: ['Summer', 'Spring'],
     imageUrl: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-20T10:00:00Z',
-    notes: 'Breathable European linen with relaxed collar.'
+    notes: 'Breathable European linen with relaxed collar.',
+    colorMetrics: { hex: '#F7F6F2', palette: 'Pure Light', temperature: 'Neutral' }
   },
   {
     id: 'wm-02',
     name: 'Black Crop Top',
     category: 'TOPS',
-    colour: 'Black',
+    colour: 'Obsidian Black',
+    pattern: 'Ribbed Fine Texture',
     fabric: 'Ribbed Cotton',
     style: 'Modern / Street',
     occasions: ['Party', 'Casual', 'Date'],
@@ -31,13 +34,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'READY_TO_WEAR',
     createdAt: '2026-09-21T11:00:00Z',
-    notes: 'Sleek crew neckline with slight stretch.'
+    notes: 'Sleek crew neckline with slight stretch.',
+    colorMetrics: { hex: '#1C1C1E', palette: 'Monochrome Atelier', temperature: 'Neutral' }
   },
   {
     id: 'wm-03',
     name: 'Blue Straight Jeans',
     category: 'BOTTOMS',
-    colour: 'Classic Blue',
+    colour: 'Classic Navy Indigo',
+    pattern: 'Raw Denim Twill',
     fabric: 'Rigid Denim',
     style: 'Effortless / Casual',
     occasions: ['College', 'Casual', 'Travel', 'Date'],
@@ -45,13 +50,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-21T12:00:00Z',
-    notes: 'High-rise silhouette with straight-leg crop.'
+    notes: 'High-rise silhouette with straight-leg crop.',
+    colorMetrics: { hex: '#264263', palette: 'Savile Tailored', temperature: 'Cool' }
   },
   {
     id: 'wm-04',
     name: 'Black Pleated Skirt',
     category: 'BOTTOMS',
-    colour: 'Black',
+    colour: 'Obsidian Black',
+    pattern: 'Accordion Knife Pleat',
     fabric: 'Polyester Blend',
     style: 'Elegant / Minimal',
     occasions: ['Party', 'Date', 'Evening', 'Work'],
@@ -59,13 +66,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-22T09:30:00Z',
-    notes: 'Accordion pleats with subtle sheen.'
+    notes: 'Accordion pleats with subtle sheen.',
+    colorMetrics: { hex: '#181921', palette: 'Monochrome Atelier', temperature: 'Neutral' }
   },
   {
     id: 'wm-05',
     name: 'Beige Trousers',
     category: 'BOTTOMS',
-    colour: 'Beige',
+    colour: 'Camel Tan',
+    pattern: 'Solid Minimalist',
     fabric: 'Cotton Twill',
     style: 'Tailored / Minimal',
     occasions: ['Work', 'College', 'Casual', 'Travel'],
@@ -73,13 +82,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-22T14:15:00Z',
-    notes: 'Pleated front relaxed fit tailored trousers.'
+    notes: 'Pleated front relaxed fit tailored trousers.',
+    colorMetrics: { hex: '#CDBCA7', palette: 'Cashmere Classic', temperature: 'Warm' }
   },
   {
     id: 'wm-06',
     name: 'White Sneakers',
     category: 'SHOES',
-    colour: 'Chalk White',
+    colour: 'Crisp Alabaster White',
+    pattern: 'Solid Minimalist',
     fabric: 'Leather',
     style: 'Minimal / Street',
     occasions: ['College', 'Travel', 'Casual', 'Work'],
@@ -87,13 +98,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'READY_TO_WEAR',
     createdAt: '2026-09-22T15:00:00Z',
-    notes: 'Clean low-top tennis silhouette with cushioned insole.'
+    notes: 'Clean low-top tennis silhouette with cushioned insole.',
+    colorMetrics: { hex: '#FFFFFF', palette: 'Pure Light', temperature: 'Neutral' }
   },
   {
     id: 'wm-07',
     name: 'Black Blazer',
     category: 'OUTERWEAR',
-    colour: 'Matte Black',
+    colour: 'Obsidian Black',
+    pattern: 'Solid Minimalist',
     fabric: 'Wool Blend',
     style: 'Tailored / Elegant',
     occasions: ['Work', 'Evening', 'Formal', 'Date'],
@@ -101,13 +114,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-23T08:00:00Z',
-    notes: 'Structured shoulder line with notched lapels.'
+    notes: 'Structured shoulder line with notched lapels.',
+    colorMetrics: { hex: '#161720', palette: 'Monochrome Atelier', temperature: 'Neutral' }
   },
   {
     id: 'wm-08',
     name: 'Denim Jacket',
     category: 'OUTERWEAR',
-    colour: 'Washed Indigo',
+    colour: 'Sky Azure Indigo',
+    pattern: 'Vintage Slub Twill',
     fabric: 'Cotton Denim',
     style: 'Street / Casual',
     occasions: ['College', 'Travel', 'Casual', 'Party'],
@@ -115,13 +130,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-23T11:20:00Z',
-    notes: 'Oversized boxy cut with brass hardware.'
+    notes: 'Oversized boxy cut with brass hardware.',
+    colorMetrics: { hex: '#4B6B94', palette: 'Morning Light', temperature: 'Cool' }
   },
   {
     id: 'wm-09',
     name: 'Floral Dress',
     category: 'DRESSES',
-    colour: 'Ivory / Floral',
+    colour: 'Peach Coral & Ivory',
+    pattern: 'Botanical Floral Motif',
     fabric: 'Chiffon',
     style: 'Romantic / Effortless',
     occasions: ['Date', 'Party', 'Travel', 'Casual'],
@@ -129,27 +146,31 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-24T10:00:00Z',
-    notes: 'A-line midi dress with delicate vintage print.'
+    notes: 'A-line midi dress with delicate vintage print.',
+    colorMetrics: { hex: '#E8A598', palette: 'Romantic Pastel', temperature: 'Warm' }
   },
   {
     id: 'wm-10',
-    name: 'Beige Cardigan',
-    category: 'OUTERWEAR',
-    colour: 'Oatmeal Beige',
+    name: 'Beige Cashmere Cardigan',
+    category: 'KNITWEAR',
+    colour: 'Oatmeal / Chalk Cream',
+    pattern: 'Chunky Ribbed Knit',
     fabric: 'Cashmere Knit',
-    style: 'Cozy / Minimal',
+    style: 'Cozy / Sculptural',
     occasions: ['College', 'Work', 'Travel', 'Casual'],
     seasons: ['Autumn', 'Winter', 'Spring'],
     imageUrl: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=80',
-    laundryStatus: 'IN_LAUNDRY',
+    laundryStatus: 'CLEAN',
     createdAt: '2026-09-24T16:45:00Z',
-    notes: 'Soft ribbed knit cardigan with tortoiseshell buttons.'
+    notes: 'Soft ribbed knit cardigan with tortoiseshell buttons.',
+    colorMetrics: { hex: '#DED6C9', palette: 'Raw Minimalist', temperature: 'Warm' }
   },
   {
     id: 'wm-11',
-    name: 'Black Heels',
+    name: 'Black Slingback Pumps',
     category: 'SHOES',
-    colour: 'Patent Black',
+    colour: 'Obsidian Black',
+    pattern: 'Glossy Patent Finish',
     fabric: 'Leather',
     style: 'Elegant / Formal',
     occasions: ['Party', 'Evening', 'Date', 'Formal'],
@@ -157,13 +178,15 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-25T09:10:00Z',
-    notes: 'Pointed toe 75mm architectural stiletto pump.'
+    notes: 'Pointed toe 75mm architectural stiletto pump.',
+    colorMetrics: { hex: '#111216', palette: 'Monochrome Atelier', temperature: 'Neutral' }
   },
   {
     id: 'wm-12',
-    name: 'White T-Shirt',
+    name: 'White Heavyweight T-Shirt',
     category: 'TOPS',
-    colour: 'Optic White',
+    colour: 'Crisp Alabaster White',
+    pattern: 'Solid Minimalist',
     fabric: 'Organic Cotton',
     style: 'Essential / Minimal',
     occasions: ['College', 'Casual', 'Travel', 'Work'],
@@ -171,7 +194,72 @@ export const INITIAL_DEMO_WARDROBE: WardrobeItem[] = [
     imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
     laundryStatus: 'CLEAN',
     createdAt: '2026-09-25T13:30:00Z',
-    notes: 'Heavyweight organic jersey crewneck tee.'
+    notes: 'Heavyweight organic jersey crewneck tee.',
+    colorMetrics: { hex: '#FFFFFF', palette: 'Pure Light', temperature: 'Neutral' }
+  },
+  {
+    id: 'wm-13',
+    name: 'Micro Box Calf Tote',
+    category: 'BAGS',
+    colour: 'Tuscan Cognac',
+    pattern: 'Smooth Nappa Finish',
+    fabric: 'Supple Calf Leather',
+    style: 'Structured Minimalist',
+    occasions: ['All occasions'],
+    seasons: ['All season'],
+    imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80',
+    laundryStatus: 'CLEAN',
+    createdAt: '2026-09-26T10:00:00Z',
+    notes: 'Unadorned architectural tote with magnetic closure.',
+    colorMetrics: { hex: '#87512F', palette: 'Rich Leather', temperature: 'Warm' }
+  },
+  {
+    id: 'wm-14',
+    name: 'Sculptural Gold Chain',
+    category: 'JEWELRY',
+    colour: 'Champagne Gold',
+    pattern: 'Cuban Link Geometry',
+    fabric: '18k Vermeil',
+    style: 'Sculptural Metal',
+    occasions: ['All occasions'],
+    seasons: ['All season'],
+    imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',
+    laundryStatus: 'CLEAN',
+    createdAt: '2026-09-26T12:00:00Z',
+    notes: 'Heavyweight interlocking link necklace with toggle closure.',
+    colorMetrics: { hex: '#D6B265', palette: 'Luster Silk', temperature: 'Warm' }
+  },
+  {
+    id: 'wm-15',
+    name: 'Tortoiseshell Sunglasses',
+    category: 'ACCESSORIES',
+    colour: 'Amber Tortoiseshell',
+    pattern: 'Mottled Amber Jacquard',
+    fabric: 'Acetate',
+    style: 'Curated Accent',
+    occasions: ['All occasions'],
+    seasons: ['All season'],
+    imageUrl: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80',
+    laundryStatus: 'CLEAN',
+    createdAt: '2026-09-26T14:30:00Z',
+    notes: 'Cat-eye frame with UV400 dark green tint lenses.',
+    colorMetrics: { hex: '#5E3A1A', palette: 'Rich Leather', temperature: 'Warm' }
+  },
+  {
+    id: 'wm-16',
+    name: 'Tailored Wool Co-ord Suit',
+    category: 'CO-ORDS',
+    colour: 'Charcoal Slate',
+    pattern: 'Fine Vertical Pinstripe',
+    fabric: 'Super 120s Wool',
+    style: 'Coordinated / Sartorial',
+    occasions: ['Work', 'Formal', 'Party'],
+    seasons: ['Autumn', 'Winter', 'Spring'],
+    imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80',
+    laundryStatus: 'CLEAN',
+    createdAt: '2026-09-27T09:00:00Z',
+    notes: 'Matching cropped double-breasted jacket and wide-leg trousers.',
+    colorMetrics: { hex: '#3B3D44', palette: 'Deep Shadow', temperature: 'Cool' }
   }
 ];
 

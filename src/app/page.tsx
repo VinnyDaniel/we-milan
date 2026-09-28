@@ -33,7 +33,8 @@ import {
   Mail, 
   Lock,
   FileText,
-  Hand
+  Hand,
+  Users
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -55,6 +56,7 @@ export default function HomePage() {
   const [isWornToday, setIsWornToday] = useState(false);
   const [isDissolving, setIsDissolving] = useState(false);
   const [todayLookbookMode, setTodayLookbookMode] = useState<'grid' | 'crumple'>('grid');
+  const [crumpleToast, setCrumpleToast] = useState<string | null>(null);
 
   // Initialize data
   useEffect(() => {
@@ -109,6 +111,16 @@ export default function HomePage() {
       setOutfitIndex(prev => prev + 1);
       setIsDissolving(false);
     }, 1100);
+  };
+
+  const handleCrumpleSuggestLook = () => {
+    sound.playDissolve();
+    setIsWornToday(false);
+    setOutfitIndex(prev => prev + 1);
+    setCrumpleToast('✨ Paper crumpled! Unfolded another curated look');
+    setTimeout(() => {
+      setCrumpleToast(null);
+    }, 2800);
   };
 
   const handleAuthSubmit = (e: React.FormEvent) => {
@@ -361,6 +373,14 @@ export default function HomePage() {
           {/* Molten Metal Outfit Dissolve Overlay when user doesn't like current outfit */}
           <OutfitDissolveOverlay isActive={isDissolving} message="Remixing your look..." />
 
+          {/* Floating Crumple Toast Banner */}
+          {crumpleToast && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-[#E44C4E] text-[#181A31] font-sans font-bold text-[11px] px-3.5 py-1.5 rounded-full shadow-2xl flex items-center gap-1.5 animate-fadeIn border border-[#F2ECDD]/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{crumpleToast}</span>
+            </div>
+          )}
+
           {/* Card Label & Lookbook Mode Switcher */}
           <div className="flex items-center justify-between mb-3">
             <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#E44C4E] font-semibold flex items-center gap-1">
@@ -425,24 +445,25 @@ export default function HomePage() {
                   paperColor="#f2ecdd"
                   draggable={true}
                   returnToOrigin={true}
+                  onCrumple={handleCrumpleSuggestLook}
                 />
               </div>
-              <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#CCA166] mt-2">
-                <Hand className="w-3 h-3 text-[#E44C4E] animate-bounce" />
-                <span>Drag to fold, crumple or smooth this lookbook print</span>
+              <div className="flex items-center gap-1.5 font-mono text-[9.5px] text-[#CCA166] mt-2">
+                <Hand className="w-3.5 h-3.5 text-[#E44C4E] animate-bounce" />
+                <span>Crumple paper to suggest another look • Drag to fold</span>
               </div>
             </div>
           ) : (
-            /* Outfit Piece Previews */
+            /* Outfit Piece Previews with smooth interactive zoom and card-hover */
             <div className="grid grid-cols-3 gap-2.5 my-3.5">
               {/* Top */}
-              <div className="flex flex-col">
+              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                 <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={currentOutfit.top?.imageUrl}
                     alt={currentOutfit.top?.name || 'Top'}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -454,13 +475,13 @@ export default function HomePage() {
               </div>
 
               {/* Bottom */}
-              <div className="flex flex-col">
+              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                 <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={currentOutfit.bottom?.imageUrl}
                     alt={currentOutfit.bottom?.name || 'Bottom'}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -472,13 +493,13 @@ export default function HomePage() {
               </div>
 
               {/* Shoe */}
-              <div className="flex flex-col">
+              <div className="flex flex-col group card-hover cursor-pointer" onClick={() => sound.playClick()}>
                 <div className="aspect-[3/4] rounded-xl overflow-hidden bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={currentOutfit.shoe?.imageUrl}
                     alt={currentOutfit.shoe?.name || 'Shoe'}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <span className="font-sans text-[11px] text-[#F2ECDD] font-medium truncate mt-1">
@@ -540,6 +561,55 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+
+        {/* FEATURE 10: Twinning & Group Collaboration Banner */}
+        <Link
+          href="/twinning"
+          className="block bg-gradient-to-r from-[#272A4B] via-[#333866] to-[#181A31] border border-[#CCA166]/40 hover:border-[#CCA166] rounded-3xl p-4 transition-all shadow-md group"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#E44C4E] to-[#CCA166] text-[#181A31] flex items-center justify-center font-bold shadow-md group-hover:scale-105 transition-transform">
+                <Users className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-serif text-sm font-semibold text-[#F2ECDD]">
+                    Twinning Studio &amp; Squad Sync
+                  </span>
+                  <span className="bg-[#CCA166]/20 text-[#CCA166] font-mono text-[8px] uppercase px-1.5 py-0.2 rounded-full font-bold">
+                    New
+                  </span>
+                </div>
+                <p className="font-sans text-[11px] text-[#9C9FBE] mt-0.5">
+                  Collaborate &amp; coordinate looks 1-on-1 or with your squad in real-time
+                </p>
+              </div>
+            </div>
+
+            {/* Avatars Stack Preview */}
+            <div className="flex items-center -space-x-2 shrink-0 pl-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+                alt="Member"
+                className="w-7 h-7 rounded-full border-2 border-[#181A31] object-cover"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80"
+                alt="Member"
+                className="w-7 h-7 rounded-full border-2 border-[#181A31] object-cover"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+                alt="Member"
+                className="w-7 h-7 rounded-full border-2 border-[#181A31] object-cover"
+              />
+            </div>
+          </div>
+        </Link>
 
         {/* Quick Hub Navigation Cards */}
         <div className="grid grid-cols-3 gap-2.5 pt-1">

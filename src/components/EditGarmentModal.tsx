@@ -22,6 +22,7 @@ export const EditGarmentModal: React.FC<EditGarmentModalProps> = ({
   const [name, setName] = useState(item?.name || '');
   const [category, setCategory] = useState<GarmentCategory>(item?.category || 'TOPS');
   const [colour, setColour] = useState(item?.colour || '');
+  const [pattern, setPattern] = useState(item?.pattern || '');
   const [fabric, setFabric] = useState(item?.fabric || '');
   const [style, setStyle] = useState(item?.style || '');
   const [laundryStatus, setLaundryStatus] = useState<LaundryStatus>(item?.laundryStatus || 'CLEAN');
@@ -34,6 +35,7 @@ export const EditGarmentModal: React.FC<EditGarmentModalProps> = ({
       setName(item.name);
       setCategory(item.category);
       setColour(item.colour);
+      setPattern(item.pattern || '');
       setFabric(item.fabric);
       setStyle(item.style);
       setLaundryStatus(item.laundryStatus);
@@ -49,7 +51,13 @@ export const EditGarmentModal: React.FC<EditGarmentModalProps> = ({
     'BOTTOMS',
     'DRESSES',
     'OUTERWEAR',
+    'CO-ORDS',
+    'KNITWEAR',
+    'ACTIVEWEAR',
+    'LOUNGEWEAR',
     'SHOES',
+    'BAGS',
+    'JEWELRY',
     'ACCESSORIES'
   ];
 
@@ -59,6 +67,7 @@ export const EditGarmentModal: React.FC<EditGarmentModalProps> = ({
       name,
       category,
       colour,
+      pattern,
       fabric,
       style,
       laundryStatus,
@@ -159,6 +168,20 @@ export const EditGarmentModal: React.FC<EditGarmentModalProps> = ({
                 className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl px-3 py-2 text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
               />
             </div>
+          </div>
+
+          {/* Pattern */}
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
+              Pattern / Weave
+            </label>
+            <input
+              type="text"
+              value={pattern}
+              onChange={(e) => setPattern(e.target.value)}
+              placeholder="Solid Minimalist, Pinstripe, Floral..."
+              className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl px-3 py-2 text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
+            />
           </div>
 
           {/* Style */}

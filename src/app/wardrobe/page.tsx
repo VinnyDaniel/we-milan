@@ -32,7 +32,13 @@ const CATEGORIES: GarmentCategory[] = [
   'BOTTOMS',
   'DRESSES',
   'OUTERWEAR',
+  'CO-ORDS',
+  'KNITWEAR',
+  'ACTIVEWEAR',
+  'LOUNGEWEAR',
   'SHOES',
+  'BAGS',
+  'JEWELRY',
   'ACCESSORIES'
 ];
 
@@ -256,12 +262,28 @@ export default function WardrobePage() {
               <div className="bg-gradient-to-b from-[#272A4B]/95 to-[#181A31] border border-[rgba(242,236,221,0.18)] rounded-3xl p-4 shadow-xl mb-3 animate-fadeIn">
                 <div className="flex items-start justify-between">
                   <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-[#CCA166] px-2 py-0.5 rounded-full bg-[#181A31] border border-[rgba(242,236,221,0.1)]">
+                        {currentItem.category}
+                      </span>
+                      {currentItem.pattern && (
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-[#34D399] px-2 py-0.5 rounded-full bg-[#34D399]/10 border border-[#34D399]/30">
+                          {currentItem.pattern}
+                        </span>
+                      )}
+                    </div>
                     <h3 className="font-serif text-xl font-medium text-[#F2ECDD] tracking-tight">
                       {currentItem.name}
                     </h3>
-                    <p className="font-mono text-xs text-[#9C9FBE] mt-0.5">
-                      {currentItem.category} · {currentItem.colour} · {currentItem.fabric}
-                    </p>
+                    <div className="flex items-center gap-2 font-mono text-xs text-[#9C9FBE] mt-0.5">
+                      {currentItem.colorMetrics && (
+                        <span
+                          className="w-2.5 h-2.5 rounded-full border border-white/20 inline-block shrink-0"
+                          style={{ backgroundColor: currentItem.colorMetrics.hex }}
+                        />
+                      )}
+                      <span>{currentItem.colour} · {currentItem.fabric}</span>
+                    </div>
                   </div>
 
                   {/* Clean / Laundry Badge */}

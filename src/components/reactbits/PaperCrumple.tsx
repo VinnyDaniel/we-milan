@@ -37,6 +37,7 @@ export interface PaperCrumpleProps {
   disabled?: boolean;
   resetKey?: number | string;
   onStateChange?: (state: string) => void;
+  onCrumple?: () => void;
   onError?: (error: Error) => void;
   className?: string;
   style?: React.CSSProperties;
@@ -326,6 +327,7 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
   disabled = false,
   resetKey = 0,
   onStateChange,
+  onCrumple,
   onError,
   className = '',
   style
@@ -350,6 +352,7 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
     returnToOrigin,
     disabled,
     onStateChange,
+    onCrumple,
     onError
   });
 
@@ -365,6 +368,7 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
     returnToOrigin,
     disabled,
     onStateChange,
+    onCrumple,
     onError
   };
 
@@ -814,9 +818,12 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
       wake();
     }
 
+    let heldStartTime = 0;
+
     function finish(instant = false) {
       if (!held) return;
       const opts = options.current;
+      const wasCrumpled = !instant && (amount.value > 0.12 || peak > 0.12 || (performance.now() - heldStartTime > 120));
       held = false;
       hit.setAttribute('aria-pressed', 'false');
       hit.dataset.held = 'false';
@@ -865,6 +872,9 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
             ? 'creased'
             : 'flat'
       );
+      if (wasCrumpled) {
+        opts.onCrumple?.();
+      }
       wake();
     }
 
@@ -881,6 +891,7 @@ export const PaperCrumple: React.FC<PaperCrumpleProps> = ({
 
     function start() {
       held = true;
+      heldStartTime = performance.now();
       peak = amount.value;
       amount.target = clamp(finite(options.current.crumpleAmount, 0.85), 0, 1);
       hit.setAttribute('aria-pressed', 'true');

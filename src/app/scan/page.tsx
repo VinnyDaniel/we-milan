@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { StorageService } from '@/services/storageService';
-import { GeminiService, GarmentAnalysisResult } from '@/services/geminiService';
+import { GeminiService, GarmentAnalysisResult, PairedOutfitResult } from '@/services/geminiService';
 import { GarmentCategory, LaundryStatus, WardrobeItem } from '@/types/wardrobe';
 import { BottomNav } from '@/components/BottomNav';
 import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import SoundToggle from '@/components/SoundToggle';
+import sound from '@/services/soundService';
+import confetti from 'canvas-confetti';
 import { 
   Camera, 
   Upload, 
@@ -19,7 +21,9 @@ import {
   ArrowLeft, 
   X, 
   Layers, 
-  ScanLine 
+  ScanLine,
+  Shuffle,
+  Bookmark
 } from 'lucide-react';
 
 export default function ScanPage() {
@@ -39,6 +43,9 @@ export default function ScanPage() {
   const [name, setName] = useState('');
   const [category, setCategory] = useState<GarmentCategory>('TOPS');
   const [colour, setColour] = useState('');
+  const [pattern, setPattern] = useState('');
+  const [patternType, setPatternType] = useState<string>('Solid');
+  const [exactColor, setExactColor] = useState<{ name: string; hex: string; palette: string; temperature: 'Warm' | 'Cool' | 'Neutral' } | null>(null);
   const [fabric, setFabric] = useState('');
   const [style, setStyle] = useState('');
   const [occasions, setOccasions] = useState('');
@@ -46,6 +53,15 @@ export default function ScanPage() {
   const [laundryStatus, setLaundryStatus] = useState<LaundryStatus>('CLEAN');
   const [analysisDone, setAnalysisDone] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<GarmentAnalysisResult | null>(null);
+  const [wardrobe, setWardrobe] = useState<WardrobeItem[]>([]);
+  const [pairedOutfit, setPairedOutfit] = useState<PairedOutfitResult | null>(null);
+  const [pairingLoading, setPairingLoading] = useState(false);
+
+  // Load wardrobe on mount for pairing
+  useEffect(() => {
+    const items = StorageService.getWardrobe();
+    setWardrobe(items);
+  }, []);
 
   // Handle File Upload from device (FEATURE 1 & 9)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,10 +125,42 @@ export default function ScanPage() {
     }
   };
 
-  // Trigger AI Analysis
+  // Generate Harmonious Wardrobe Pairing for this Garment
+  const generatePairing = (
+    itemTitle?: string,
+    itemCategory?: GarmentCategory,
+    itemColour?: string,
+    itemPattern?: string,
+    imgUrl?: string
+  ) => {
+    setPairingLoading(true);
+    sound.playShuffle();
+    try {
+      const currentWardrobe = StorageService.getWardrobe();
+      setWardrobe(currentWardrobe);
+      const pairing = GeminiService.pairGarmentWithWardrobe(
+        {
+          name: itemTitle || name || 'Scanned Piece',
+          category: itemCategory || category,
+          colour: itemColour || colour || 'Neutral',
+          pattern: itemPattern || pattern || 'Solid',
+          imageUrl: imgUrl || selectedImage || ''
+        },
+        currentWardrobe
+      );
+      setPairedOutfit(pairing);
+    } catch (e) {
+      console.error('Pairing error', e);
+    } finally {
+      setPairingLoading(false);
+    }
+  };
+
+  // Trigger AI Analysis with Exact Colour, Pattern & Category
   const triggerAiAnalysis = async (imageDataUrl: string, nameHint: string) => {
     setIsAnalyzing(true);
     setAnalysisDone(false);
+    setPairedOutfit(null);
 
     try {
       const result = await GeminiService.analyzeGarment(imageDataUrl, nameHint);
@@ -120,12 +168,30 @@ export default function ScanPage() {
       setName(result.name);
       setCategory(result.category);
       setColour(result.colour);
+      setPattern(result.pattern);
+      setPatternType(result.patternType);
+      setExactColor(result.exactColor);
       setFabric(result.fabric);
       setStyle(result.style);
       setOccasions(result.occasions.join(', '));
       setSeasons(result.seasons.join(', '));
       setLaundryStatus(result.laundryStatus);
       setAnalysisDone(true);
+
+      // Auto-pair with user's wardrobe pieces
+      const currentWardrobe = StorageService.getWardrobe();
+      setWardrobe(currentWardrobe);
+      const pairing = GeminiService.pairGarmentWithWardrobe(
+        {
+          name: result.name,
+          category: result.category,
+          colour: result.colour,
+          pattern: result.pattern,
+          imageUrl: imageDataUrl
+        },
+        currentWardrobe
+      );
+      setPairedOutfit(pairing);
     } catch (err) {
       console.error('Error during AI analysis', err);
     } finally {
@@ -133,7 +199,7 @@ export default function ScanPage() {
     }
   };
 
-  // FEATURE 2: ADD TO WARDROBE (Persists with actual image)
+  // FEATURE 2: ADD TO WARDROBE (Persists with actual image & exact attributes)
   const handleAddToWardrobe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedImage) return;
@@ -142,13 +208,19 @@ export default function ScanPage() {
       name,
       category,
       colour,
+      pattern,
       fabric,
       style,
       occasions: occasions.split(',').map((s) => s.trim()).filter(Boolean),
       seasons: seasons.split(',').map((s) => s.trim()).filter(Boolean),
-      imageUrl: selectedImage, // FEATURE 9: Actual uploaded image
+      imageUrl: selectedImage, // Actual uploaded image
       laundryStatus,
-      notes: `Identified by We Milan AI`
+      notes: `Identified by We Milan Atelier (${patternType}, ${exactColor?.palette || 'Curated'})`,
+      colorMetrics: exactColor ? {
+        hex: exactColor.hex,
+        palette: exactColor.palette,
+        temperature: exactColor.temperature
+      } : undefined
     });
 
     setIsSuccess(true);
@@ -162,7 +234,13 @@ export default function ScanPage() {
     'BOTTOMS',
     'DRESSES',
     'OUTERWEAR',
+    'CO-ORDS',
+    'KNITWEAR',
+    'ACTIVEWEAR',
+    'LOUNGEWEAR',
     'SHOES',
+    'BAGS',
+    'JEWELRY',
     'ACCESSORIES'
   ];
 
@@ -392,11 +470,11 @@ export default function ScanPage() {
                   />
                 </div>
 
-                {/* Category & Colour */}
+                {/* Category & Pattern */}
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
-                      Category
+                      Category ({categories.length})
                     </label>
                     <select
                       value={category}
@@ -413,14 +491,74 @@ export default function ScanPage() {
 
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
-                      Colour
+                      Pattern / Weave
                     </label>
+                    <input
+                      type="text"
+                      required
+                      value={pattern}
+                      onChange={(e) => setPattern(e.target.value)}
+                      placeholder="Solid, Striped, Floral..."
+                      className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl px-3 py-2 text-xs text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
+                    />
+                  </div>
+                </div>
+
+                {/* Pattern Quick Selector Chips */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-[#CCA166]">
+                      Detected Pattern: {patternType}
+                    </span>
+                    <span className="font-mono text-[9px] text-[#9C9FBE]">
+                      Tap to switch pattern
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['Solid', 'Striped', 'Floral', 'Plaid', 'Houndstooth', 'Geometric', 'Animal Print', 'Ombré'].map((pt) => (
+                      <button
+                        type="button"
+                        key={pt}
+                        onClick={() => {
+                          setPatternType(pt);
+                          setPattern(`${colour} ${pt}`);
+                        }}
+                        className={`px-2 py-0.5 rounded-full font-mono text-[9px] uppercase tracking-wider transition-all ${
+                          patternType === pt
+                            ? 'bg-[#CCA166] text-[#181A31] font-bold shadow-sm'
+                            : 'bg-[#181A31] text-[#9C9FBE] hover:text-[#F2ECDD] border border-[rgba(242,236,221,0.1)]'
+                        }`}
+                      >
+                        {pt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Exact Colour & Undertone */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE]">
+                      Exact Colour & Undertone
+                    </label>
+                    {exactColor && (
+                      <span className="font-mono text-[9px] text-[#CCA166] flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#CCA166]" />
+                        <span>{exactColor.palette} · {exactColor.temperature}</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative flex items-center">
+                    <div
+                      className="absolute left-3 w-4 h-4 rounded-full border border-white/20 shadow-sm"
+                      style={{ backgroundColor: exactColor?.hex || analysisResult?.detectedMetrics?.dominantHex || '#CCA166' }}
+                    />
                     <input
                       type="text"
                       required
                       value={colour}
                       onChange={(e) => setColour(e.target.value)}
-                      className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl px-3 py-2 text-xs text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
+                      className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
                     />
                   </div>
                 </div>
@@ -442,7 +580,7 @@ export default function ScanPage() {
 
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-wider text-[#9C9FBE] mb-1">
-                      Style
+                      Style / Aesthetic
                     </label>
                     <input
                       type="text"
@@ -462,13 +600,13 @@ export default function ScanPage() {
                         style={{ backgroundColor: analysisResult.detectedMetrics.dominantHex }}
                       />
                       <span className="text-[#F2ECDD]">
-                        Tone {analysisResult.detectedMetrics.dominantHex}
+                        Hex {analysisResult.detectedMetrics.dominantHex}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[#CCA166]">
+                    <div className="flex items-center gap-2 text-[#CCA166]">
                       <ScanLine className="w-3 h-3 text-[#E44C4E]" />
                       <span>
-                        Roughness {Math.round(analysisResult.detectedMetrics.textureRoughness * 100)}% · {analysisResult.confidence}% confidence
+                        Pattern {Math.round(analysisResult.detectedMetrics.patternVariance * 100)}% · Texture {Math.round(analysisResult.detectedMetrics.textureRoughness * 100)}% · {analysisResult.confidence}% confidence
                       </span>
                     </div>
                   </div>
@@ -501,6 +639,119 @@ export default function ScanPage() {
                     className="w-full bg-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-xl px-3 py-2 text-xs text-[#F2ECDD] focus:outline-none focus:border-[#CCA166]"
                   />
                 </div>
+
+                {/* FEATURE 9 & 10: ATELIER OUTFIT PAIRING */}
+                {pairedOutfit && (
+                  <div className="bg-[#181A31]/95 border border-[#CCA166]/30 rounded-2xl p-3.5 space-y-3 shadow-lg animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#CCA166]" />
+                        <span className="font-serif text-xs font-semibold text-[#F2ECDD] tracking-wide">
+                          Atelier Paired Ensemble
+                        </span>
+                      </div>
+                      <span className="font-mono text-[9px] bg-[#CCA166]/15 text-[#CCA166] border border-[#CCA166]/30 px-2 py-0.5 rounded-full font-bold">
+                        {pairedOutfit.harmonyScore}% Harmony · {pairedOutfit.colorHarmony}
+                      </span>
+                    </div>
+
+                    <p className="font-sans text-[11px] text-[#9C9FBE] leading-relaxed">
+                      {pairedOutfit.pairingRationale}
+                    </p>
+
+                    {/* Ensemble Visual Preview: Anchor + Paired Pieces */}
+                    <div className="grid grid-cols-3 gap-2 pt-1">
+                      {/* Anchor Scanned Piece */}
+                      <div className="relative bg-[#272A4B] rounded-xl p-2 border border-[#CCA166]/40 flex flex-col items-center text-center">
+                        <span className="absolute top-1 left-1 bg-[#E44C4E] text-[#181A31] font-mono text-[7.5px] uppercase font-bold px-1.5 py-0.2 rounded-full">
+                          Anchor
+                        </span>
+                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 my-1">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={pairedOutfit.anchorItem.imageUrl || selectedImage || ''}
+                            alt={pairedOutfit.anchorItem.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="font-sans text-[10px] text-[#F2ECDD] font-medium truncate w-full">
+                          {pairedOutfit.anchorItem.name}
+                        </span>
+                        <span className="font-mono text-[8px] text-[#CCA166] uppercase">
+                          {pairedOutfit.anchorItem.category}
+                        </span>
+                      </div>
+
+                      {/* Paired Wardrobe Pieces */}
+                      {pairedOutfit.pairedPieces.slice(0, 2).map((piece) => (
+                        <div
+                          key={piece.id}
+                          className="relative bg-[#272A4B]/70 rounded-xl p-2 border border-[rgba(242,236,221,0.1)] flex flex-col items-center text-center"
+                        >
+                          <span className="absolute top-1 left-1 bg-[#CCA166]/20 text-[#CCA166] font-mono text-[7.5px] uppercase font-semibold px-1.5 py-0.2 rounded-full">
+                            Pairing
+                          </span>
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 my-1">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={piece.imageUrl}
+                              alt={piece.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span className="font-sans text-[10px] text-[#F2ECDD] font-medium truncate w-full">
+                            {piece.name}
+                          </span>
+                          <span className="font-mono text-[8px] text-[#9C9FBE] uppercase flex items-center gap-1 justify-center">
+                            <span
+                              className="w-1.5 h-1.5 rounded-full inline-block"
+                              style={{ backgroundColor: piece.colorMetrics?.hex || '#CCA166' }}
+                            />
+                            <span>{piece.category}</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Quick Pairing Actions */}
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={() => generatePairing()}
+                        disabled={pairingLoading}
+                        className="text-[10px] font-mono text-[#CCA166] hover:text-[#F2ECDD] flex items-center gap-1 transition-colors"
+                      >
+                        <RefreshCw className={`w-3 h-3 ${pairingLoading ? 'animate-spin' : ''}`} />
+                        <span>Shuffle Pairing</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          StorageService.addItem({
+                            name,
+                            category,
+                            colour,
+                            pattern,
+                            fabric,
+                            style,
+                            occasions: occasions.split(',').map((s) => s.trim()).filter(Boolean),
+                            seasons: seasons.split(',').map((s) => s.trim()).filter(Boolean),
+                            imageUrl: selectedImage || '',
+                            laundryStatus,
+                            notes: `Paired Look Ensemble (${pairedOutfit.colorHarmony})`
+                          });
+                          confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+                          router.push('/style');
+                        }}
+                        className="text-[10px] font-mono text-[#E44C4E] hover:underline flex items-center gap-1"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>Style & Wear &rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* StarBorder ADD TO WARDROBE Button */}
                 <div className="pt-2">

@@ -4,7 +4,13 @@ export type GarmentCategory =
   | 'BOTTOMS'
   | 'DRESSES'
   | 'OUTERWEAR'
+  | 'CO-ORDS'
+  | 'KNITWEAR'
+  | 'ACTIVEWEAR'
+  | 'LOUNGEWEAR'
   | 'SHOES'
+  | 'BAGS'
+  | 'JEWELRY'
   | 'ACCESSORIES';
 
 export type LaundryStatus = 'CLEAN' | 'IN_LAUNDRY' | 'READY_TO_WEAR';
@@ -41,6 +47,7 @@ export interface WardrobeItem {
   category: GarmentCategory;
   colour: string;
   fabric: string;
+  pattern?: string;
   style: string;
   occasions: string[];
   seasons: string[];
@@ -48,6 +55,11 @@ export interface WardrobeItem {
   laundryStatus: LaundryStatus;
   createdAt: string;
   notes?: string;
+  colorMetrics?: {
+    hex: string;
+    palette: string;
+    temperature: 'Warm' | 'Cool' | 'Neutral';
+  };
 }
 
 export interface WeatherInfo {

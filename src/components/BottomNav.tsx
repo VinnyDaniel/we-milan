@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Layers, Home, User, PlusCircle } from 'lucide-react';
+import { Sparkles, Layers, Home, User, PlusCircle, Users } from 'lucide-react';
 import sound from '@/services/soundService';
 
 export const BottomNav: React.FC = () => {
@@ -14,6 +14,7 @@ export const BottomNav: React.FC = () => {
     { label: 'WARDROBE', href: '/wardrobe', icon: Layers },
     { label: 'SCAN', href: '/scan', icon: PlusCircle, isScan: true },
     { label: 'STYLE', href: '/style', icon: Sparkles },
+    { label: 'TWIN', href: '/twinning', icon: Users },
     { label: 'PROFILE', href: '/profile', icon: User }
   ];
 
@@ -52,7 +53,7 @@ export const BottomNav: React.FC = () => {
               onClick={() => {
                 if (!isActive) sound.playTransition();
               }}
-              className={`flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+              className={`flex flex-col items-center py-1 px-1.5 rounded-xl transition-all ${
                 isActive
                   ? 'text-[#CCA166]'
                   : 'text-[#9C9FBE] hover:text-[#F2ECDD]'
