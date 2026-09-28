@@ -263,10 +263,15 @@ export class StorageService {
     const defaultProfile: UserProfile = {
       name: 'Milanista Curator',
       email: 'curator@wemilan.fashion',
+      password: 'milan2026',
       handle: 'milanista',
       isGuest: false,
       bio: 'Tactile tailoring, archival palettes & climate-adaptive layering.',
       aesthetic: 'Milano Minimalist',
+      gender: 'Non-binary',
+      customGender: '',
+      age: 24,
+      location: 'Milan, Italy',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
       measurements: {
         topSize: 'M (EU 48 / US 38)',
@@ -276,7 +281,10 @@ export class StorageService {
         fitPreference: 'Tailored',
         chest: '38 in (96 cm)',
         waist: '31 in (79 cm)',
-        inseam: '32 in (81 cm)'
+        hips: '36 in (91 cm)',
+        inseam: '32 in (81 cm)',
+        shoulder: '18 in (46 cm)',
+        weight: '68 kg (150 lbs)'
       }
     };
 

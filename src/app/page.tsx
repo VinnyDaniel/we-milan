@@ -113,9 +113,11 @@ export default function HomePage() {
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    StorageService.setSessionUser({
-      name: email.split('@')[0] || 'Milan Member',
-      email: email || 'user@wemilan.com',
+    const current = StorageService.getUserProfile();
+    StorageService.saveUserProfile({
+      name: current.name || email.split('@')[0] || 'Milan Member',
+      email: email || current.email || 'user@wemilan.com',
+      password: password || current.password || 'milan2026',
       isGuest: false
     });
     setIsAuthenticated(true);
@@ -163,9 +165,13 @@ export default function HomePage() {
 
         {/* Brand Header */}
         <div className="relative z-10 pt-8 text-center">
-          <div className="inline-flex w-20 h-20 rounded-3xl overflow-hidden border border-[rgba(242,236,221,0.22)] shadow-[0_12px_30px_rgba(228,76,78,0.3)] items-center justify-center mb-3">
+          <div className="inline-flex w-24 h-24 items-center justify-center mb-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={assetPath('/logo.png')} alt="We Milan" className="w-full h-full object-cover" />
+            <img
+              src={assetPath('/logo.png')}
+              alt="We Milan"
+              className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(228,76,78,0.4)]"
+            />
           </div>
           <div className="flex justify-center">
             <FoldText

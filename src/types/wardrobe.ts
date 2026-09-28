@@ -125,20 +125,28 @@ export interface UserMeasurements {
   bottomSize: string;
   shoeSize: string;
   height: string;
-  fitPreference: 'Tailored' | 'Relaxed' | 'Oversized' | 'Slim';
+  fitPreference: 'Tailored' | 'Relaxed' | 'Oversized' | 'Slim' | 'Fluid';
   chest?: string;
   waist?: string;
+  hips?: string;
   inseam?: string;
+  shoulder?: string;
+  weight?: string;
 }
 
 export interface UserProfile {
   name: string;
   email: string;
+  password?: string;
   isGuest: boolean;
   avatarUrl?: string;
   handle?: string;
   bio?: string;
   aesthetic?: string;
+  gender?: string;
+  customGender?: string;
+  age?: number | string;
+  location?: string;
   measurements?: UserMeasurements;
 }
 

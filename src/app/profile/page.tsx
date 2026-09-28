@@ -11,6 +11,7 @@ import StarBorder from '@/components/reactbits/StarBorder';
 import WeMilanLogo from '@/components/WeMilanLogo';
 import ProfilePhotoModal from '@/components/ProfilePhotoModal';
 import MeasurementsModal from '@/components/MeasurementsModal';
+import EditProfileModal from '@/components/EditProfileModal';
 import ThemeToggle from '@/components/ThemeToggle';
 import SoundToggle from '@/components/SoundToggle';
 import { 
@@ -30,7 +31,12 @@ import {
   Camera,
   Ruler,
   Sliders,
-  UserCheck
+  UserCheck,
+  Edit3,
+  Lock,
+  Calendar,
+  ShieldCheck,
+  User as UserIcon
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -41,6 +47,7 @@ export default function ProfilePage() {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const [isMeasurementsModalOpen, setIsMeasurementsModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [shareToast, setShareToast] = useState<string | null>(null);
 
@@ -85,6 +92,12 @@ export default function ProfilePage() {
     triggerToast('Sizing & fit specifications saved!');
   };
 
+  const handleSaveProfile = (updates: Partial<UserProfile>) => {
+    const updated = StorageService.saveUserProfile(updates);
+    setProfile(updated);
+    triggerToast('Atelier profile, age, gender & security updated!');
+  };
+
   const triggerToast = (msg: string) => {
     setShareToast(msg);
     setTimeout(() => setShareToast(null), 3000);
@@ -98,24 +111,32 @@ export default function ProfilePage() {
     height: '178 cm (5\'10")',
     fitPreference: 'Tailored',
     chest: '38 in (96 cm)',
-    waist: '31 in (79 cm)'
+    waist: '31 in (79 cm)',
+    hips: '36 in (91 cm)',
+    inseam: '32 in (81 cm)',
+    shoulder: '18 in (46 cm)',
+    weight: '68 kg (150 lbs)'
   };
 
   const buildShareDossierText = () => {
     return `✦ WE MILAN — Atelier Curator Dossier ✦
 Curator: ${profile.name} (@${userHandle})
+Identity: ${profile.gender || 'Non-binary'} • Age: ${profile.age || 24} • ${profile.location || 'Milan, Italy'}
 Aesthetic: ${profile.aesthetic || 'Milano Minimalist & Tactile Tailoring'}
+Ethos: ${profile.bio || 'Tactile tailoring, archival palettes & climate-adaptive layering.'}
 
 📐 Sizing & Fit Specs:
 • Top / Jacket: ${measurements.topSize}
 • Bottom / Trousers: ${measurements.bottomSize}
 • Footwear: ${measurements.shoeSize}
-• Height: ${measurements.height}
+• Height / Weight: ${measurements.height} / ${measurements.weight || '68 kg'}
 • Silhouette: ${measurements.fitPreference}
 • Chest/Waist: ${measurements.chest || '38 in'} / ${measurements.waist || '31 in'}
+• Shoulders / Hips: ${measurements.shoulder || '18 in'} / ${measurements.hips || '36 in'}
+• Inseam: ${measurements.inseam || '32 in'}
 
 🌿 Wardrobe: ${cleanCount} Ready Pieces (${readyCount} Curated Fits)
-Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
+Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/#u=${userHandle}`;
   };
 
   const handleShareDossier = async () => {
@@ -223,24 +244,104 @@ Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
         </div>
 
         {/* Quick Profile Actions Bar */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <button
             type="button"
-            onClick={() => setIsPhotoModalOpen(true)}
-            className="py-2.5 px-3 rounded-2xl bg-[#272A4B]/80 hover:bg-[#333866] border border-[rgba(242,236,221,0.12)] text-[#F2ECDD] flex items-center justify-center gap-2 transition-all active:scale-98"
+            onClick={() => setIsEditProfileModalOpen(true)}
+            className="py-2.5 px-2 rounded-2xl bg-[#272A4B]/80 hover:bg-[#333866] border border-[rgba(242,236,221,0.12)] text-[#F2ECDD] flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group"
           >
-            <Camera className="w-4 h-4 text-[#CCA166]" />
-            <span className="font-serif text-xs font-medium">Camera / Upload</span>
+            <Edit3 className="w-4 h-4 text-[#CCA166]" />
+            <span className="font-serif text-[11px] font-medium leading-none">Edit Profile</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsMeasurementsModalOpen(true)}
-            className="py-2.5 px-3 rounded-2xl bg-[#272A4B]/80 hover:bg-[#333866] border border-[rgba(242,236,221,0.12)] text-[#F2ECDD] flex items-center justify-center gap-2 transition-all active:scale-98"
+            className="py-2.5 px-2 rounded-2xl bg-[#272A4B]/80 hover:bg-[#333866] border border-[rgba(242,236,221,0.12)] text-[#F2ECDD] flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group"
           >
             <Ruler className="w-4 h-4 text-[#E44C4E]" />
-            <span className="font-serif text-xs font-medium">Edit Sizing</span>
+            <span className="font-serif text-[11px] font-medium leading-none">Edit Sizing</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setIsPhotoModalOpen(true)}
+            className="py-2.5 px-2 rounded-2xl bg-[#272A4B]/80 hover:bg-[#333866] border border-[rgba(242,236,221,0.12)] text-[#F2ECDD] flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group"
+          >
+            <Camera className="w-4 h-4 text-[#38BDF8]" />
+            <span className="font-serif text-[11px] font-medium leading-none">Photo / Cam</span>
+          </button>
+        </div>
+
+        {/* Identity, Age, Gender & Credentials Section */}
+        <div className="bg-gradient-to-br from-[#272A4B]/80 to-[#181A31] border border-[rgba(242,236,221,0.14)] rounded-3xl p-4 shadow-xl space-y-3">
+          <div className="flex items-center justify-between border-b border-[rgba(242,236,221,0.08)] pb-2.5">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#CCA166]" />
+              <h3 className="font-serif text-sm font-medium text-[#F2ECDD]">
+                Persona, Age & Credentials
+              </h3>
+            </div>
+            <button
+              onClick={() => setIsEditProfileModalOpen(true)}
+              className="font-mono text-[10px] text-[#CCA166] hover:underline flex items-center gap-1"
+            >
+              <span>Edit</span>
+              <Edit3 className="w-3 h-3" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-left">
+            {/* Age */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                Age
+              </span>
+              <span className="font-serif text-sm font-semibold text-[#F2ECDD] mt-0.5 block truncate">
+                {profile.age ? `${profile.age} years` : '24 years'}
+              </span>
+            </div>
+
+            {/* Gender Identity */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                Gender Identity
+              </span>
+              <span className="font-serif text-sm font-semibold text-[#E44C4E] mt-0.5 block truncate">
+                {profile.gender || 'Non-binary'}
+              </span>
+            </div>
+
+            {/* Location */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                Fashion Capital
+              </span>
+              <span className="font-mono text-xs text-[#F2ECDD] mt-0.5 block truncate">
+                {profile.location || 'Milan, Italy'}
+              </span>
+            </div>
+
+            {/* Password */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)] flex items-center justify-between">
+              <div>
+                <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                  Password
+                </span>
+                <span className="font-mono text-xs text-[#34D399] mt-0.5 block">
+                  •••••••• (Active)
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditProfileModalOpen(true)}
+                className="w-7 h-7 rounded-xl bg-[#272A4B] text-[#CCA166] flex items-center justify-center hover:text-[#F2ECDD] transition-all"
+                title="Change Password"
+              >
+                <Lock className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Sizing & Measurements Dossier Section */}
@@ -303,13 +404,13 @@ Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
               </span>
             </div>
 
-            {/* Height */}
+            {/* Height & Weight */}
             <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
               <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
-                Height
+                Height & Weight
               </span>
               <span className="font-mono text-xs text-[#F2ECDD] mt-0.5 block truncate">
-                {measurements.height}
+                {measurements.height} • {measurements.weight || '68 kg'}
               </span>
             </div>
 
@@ -319,7 +420,27 @@ Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
                 Chest & Waist
               </span>
               <span className="font-mono text-xs text-[#F2ECDD] mt-0.5 block truncate">
-                {measurements.chest?.split(' ')[0]} / {measurements.waist?.split(' ')[0]}
+                {measurements.chest?.split(' ')[0] || '38 in'} / {measurements.waist?.split(' ')[0] || '31 in'}
+              </span>
+            </div>
+
+            {/* Shoulders & Inseam */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                Shoulders & Inseam
+              </span>
+              <span className="font-mono text-xs text-[#F2ECDD] mt-0.5 block truncate">
+                {measurements.shoulder || '18 in'} / {measurements.inseam || '32 in'}
+              </span>
+            </div>
+
+            {/* Hips */}
+            <div className="bg-[#181A31]/80 rounded-2xl p-2.5 border border-[rgba(242,236,221,0.08)]">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#9C9FBE] block">
+                Hips
+              </span>
+              <span className="font-mono text-xs text-[#F2ECDD] mt-0.5 block truncate">
+                {measurements.hips || '36 in'}
               </span>
             </div>
           </div>
@@ -517,6 +638,14 @@ Explore my digital wardrobe on We Milan: https://wemilan.app/u/${userHandle}`;
         onClose={() => setIsMeasurementsModalOpen(false)}
         measurements={measurements}
         onSave={handleSaveMeasurements}
+      />
+
+      {/* Edit Profile, Age, Gender & Password Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileModalOpen}
+        onClose={() => setIsEditProfileModalOpen(false)}
+        profile={profile}
+        onSave={handleSaveProfile}
       />
 
       {/* Connect with Friends on Different Platforms Modal */}

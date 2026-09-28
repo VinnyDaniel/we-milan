@@ -75,7 +75,7 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
       <div className="relative z-10 flex flex-col items-center text-center px-6">
         {/* WE MILAN Official Logo Badge with pop & glow */}
         <div
-          className={`w-28 h-28 rounded-3xl overflow-hidden border border-[rgba(242,236,221,0.25)] shadow-[0_20px_60px_rgba(228,76,78,0.4)] flex items-center justify-center transition-all duration-700 ease-out transform ${
+          className={`w-28 h-28 flex items-center justify-center transition-all duration-700 ease-out transform ${
             stage === 'enter'
               ? 'scale-75 opacity-0 translate-y-4'
               : 'scale-100 opacity-100 translate-y-0'
@@ -85,7 +85,7 @@ export const SplashLoader: React.FC<SplashLoaderProps> = ({
           <img
             src={assetPath('/logo.png')}
             alt="We Milan Logo"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain drop-shadow-[0_16px_40px_rgba(228,76,78,0.45)]"
           />
         </div>
 

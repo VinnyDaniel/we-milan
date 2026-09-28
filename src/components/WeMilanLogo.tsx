@@ -34,14 +34,12 @@ export const WeMilanLogo: React.FC<WeMilanLogoProps> = ({
   const content = (
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
       {/* Official We Milan App Icon */}
-      <div
-        className={`${badgeSize} shrink-0 overflow-hidden rounded-xl border border-[rgba(242,236,221,0.22)] shadow-[0_4px_14px_rgba(0,0,0,0.35),0_0_12px_rgba(204,161,102,0.15)] relative`}
-      >
+      <div className={`${badgeSize} shrink-0 relative flex items-center justify-center`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={assetPath('/logo.png')}
           alt="We Milan Logo"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
         />
       </div>
 
