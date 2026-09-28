@@ -245,9 +245,9 @@ export default function ScanPage() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col justify-between bg-[#181A31] text-[#F2ECDD] min-h-full">
+    <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden bg-[#181A31] text-[#F2ECDD]">
       {/* Top Header */}
-      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2">
+      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2 shrink-0 z-20">
         <div className="flex items-center justify-between">
           <WeMilanLogo variant="header" size="sm" />
 
@@ -286,7 +286,7 @@ export default function ScanPage() {
       </div>
 
       {/* Main Container */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 scrollbar-none space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 pb-28 scrollbar-none space-y-4">
         {/* Step 1: Camera or File Upload Picker if no image selected */}
         {!selectedImage && !isCameraActive && (
           <div className="space-y-4 my-auto py-8">

@@ -51,7 +51,7 @@ export const MobileContainer: React.FC<MobileContainerProps> = ({ children }) =>
 
   return (
     <div
-      className={`min-h-screen w-full flex justify-center items-center py-0 md:py-6 selection:bg-[#E44C4E] selection:text-[#181A31] transition-colors duration-300 ${
+      className={`h-screen h-[100dvh] w-full flex justify-center items-center py-0 md:py-6 selection:bg-[#E44C4E] selection:text-[#181A31] transition-colors duration-300 overflow-hidden ${
         isDark ? 'bg-[#101222] text-[#F2ECDD]' : 'bg-[#EDE8DC] text-[#181A31]'
       }`}
     >
@@ -73,7 +73,7 @@ export const MobileContainer: React.FC<MobileContainerProps> = ({ children }) =>
 
       {/* Main 430px Mobile Application Shell */}
       <div
-        className={`relative w-full md:max-w-[430px] min-h-screen md:min-h-[880px] md:h-[92vh] flex flex-col md:rounded-[36px] overflow-hidden md:border transition-all duration-300 z-10 ${
+        className={`relative w-full md:max-w-[430px] h-screen h-[100dvh] md:h-[92vh] md:max-h-[920px] flex flex-col md:rounded-[36px] overflow-hidden md:border transition-all duration-300 z-10 ${
           isDark
             ? 'bg-[#181A31] text-[#F2ECDD] md:border-[rgba(242,236,221,0.12)] md:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)_inset]'
             : 'bg-[#FAF7F2] text-[#181A31] md:border-[rgba(24,26,49,0.12)] md:shadow-[0_25px_70px_-15px_rgba(39,42,75,0.22),0_0_0_1px_rgba(255,255,255,0.8)_inset]'
@@ -112,8 +112,8 @@ export const MobileContainer: React.FC<MobileContainerProps> = ({ children }) =>
           />
         </div>
 
-        {/* Scrollable application content container */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden relative flex flex-col scrollbar-none z-10">
+        {/* Application content container */}
+        <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col z-10">
           {children}
         </div>
       </div>

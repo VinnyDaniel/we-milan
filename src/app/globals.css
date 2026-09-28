@@ -21,11 +21,18 @@
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+html,
+body {
+  height: 100%;
+  height: 100dvh;
+  overscroll-behavior-y: none;
+}
+
 body {
   background-color: #101222;
   color: #F2ECDD;
   font-family: 'Outfit', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

@@ -133,9 +133,9 @@ export default function WardrobePage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between bg-[#181A31] text-[#F2ECDD] min-h-full">
+    <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden bg-[#181A31] text-[#F2ECDD]">
       {/* Top Header */}
-      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2">
+      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2 shrink-0 z-20">
         <div className="flex items-center justify-between">
           <WeMilanLogo variant="header" size="sm" />
 
@@ -193,7 +193,7 @@ export default function WardrobePage() {
       </div>
 
       {/* FEATURE 4 — CLOTHING CATEGORIES STRIP */}
-      <div className="px-4 py-3 overflow-x-auto scrollbar-none border-b border-[rgba(242,236,221,0.06)] bg-[#181A31]/50">
+      <div className="px-4 py-3 overflow-x-auto scrollbar-none border-b border-[rgba(242,236,221,0.06)] bg-[#181A31]/50 shrink-0 z-10">
         <div className="flex items-center gap-1.5 min-w-max">
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat;
@@ -215,7 +215,7 @@ export default function WardrobePage() {
       </div>
 
       {/* Main Wardrobe Stage Area */}
-      <div className="flex-1 flex flex-col justify-between overflow-y-auto px-4 py-2 scrollbar-none">
+      <div className="flex-1 min-h-0 flex flex-col justify-between overflow-y-auto px-4 py-2 pb-28 scrollbar-none">
         {filteredItems.length > 0 ? (
           <>
             {/* View Mode Switching: 3D Horizontal Carousel or Infinite Helix Spiral */}

@@ -197,9 +197,9 @@ function StyleMeContent() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between bg-[#181A31] text-[#F2ECDD] min-h-full">
+    <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden bg-[#181A31] text-[#F2ECDD]">
       {/* Top Header */}
-      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2">
+      <div className="px-5 pt-4 pb-2 border-b border-[rgba(242,236,221,0.08)] space-y-2 shrink-0 z-20">
         <div className="flex items-center justify-between">
           <WeMilanLogo variant="header" size="sm" />
 
@@ -240,7 +240,7 @@ function StyleMeContent() {
       </div>
 
       {/* Main Content Body */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 scrollbar-none space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 pb-28 scrollbar-none space-y-4">
         {/* Anchor Piece Highlight Banner if coming from Wardrobe "STYLE THIS" */}
         {anchorItem && (
           <div className="bg-[#272A4B]/80 border border-[#CCA166]/30 rounded-2xl p-3 flex items-center gap-3">

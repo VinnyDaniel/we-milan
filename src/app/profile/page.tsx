@@ -176,7 +176,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between bg-[#181A31] text-[#F2ECDD] min-h-full relative">
+    <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden bg-[#181A31] text-[#F2ECDD]">
       {/* Toast Notification */}
       {shareToast && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#CCA166] text-[#181A31] font-sans font-bold text-xs px-4 py-2 rounded-full shadow-2xl flex items-center gap-1.5 animate-fadeIn">
@@ -186,7 +186,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
       )}
 
       {/* Top Brand & Curator Header */}
-      <div className="px-5 pt-4 pb-3 border-b border-[rgba(242,236,221,0.08)] flex items-center justify-between">
+      <div className="px-5 pt-4 pb-3 border-b border-[rgba(242,236,221,0.08)] flex items-center justify-between shrink-0 z-20">
         <WeMilanLogo variant="header" size="sm" />
 
         <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 scrollbar-none">
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 pb-28 space-y-5 scrollbar-none">
         {/* Eyebrow & Title */}
         <div>
           <div className="eyebrow mb-1">
