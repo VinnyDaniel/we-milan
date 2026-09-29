@@ -268,17 +268,53 @@ export class StorageService {
     return typeof window !== 'undefined';
   }
 
+  // ── Session ─────────────────────────────────────────────────────────────────
+
+  /** Key of the currently active account email */
+  private static readonly SESSION_KEY = 'we_milan_session_v1';
+
+  /** Returns the email of whoever is currently logged in, or null */
+  public static getActiveEmail(): string | null {
+    if (!this.isBrowser()) return null;
+    try { return localStorage.getItem(this.SESSION_KEY); } catch { return null; }
+  }
+
+  /** Start a session for this email */
+  public static startSession(email: string): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem(this.SESSION_KEY, email);
+  }
+
+  /** End the current session */
+  public static endSession(): void {
+    if (!this.isBrowser()) return;
+    localStorage.removeItem(this.SESSION_KEY);
+  }
+
+  // ── Per-account storage keys ─────────────────────────────────────────────────
+
+  private static wardrobeKey(email: string): string {
+    return `we_milan_wardrobe_${email}`;
+  }
+  private static profileKey(email: string): string {
+    return `we_milan_profile_${email}`;
+  }
+
+  // ── Wardrobe ─────────────────────────────────────────────────────────────────
+
   public static getWardrobe(): WardrobeItem[] {
     if (!this.isBrowser()) return INITIAL_DEMO_WARDROBE;
+    const email = this.getActiveEmail();
+    const key = email ? this.wardrobeKey(email) : STORAGE_KEY;
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
+      const data = localStorage.getItem(key);
       if (!data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DEMO_WARDROBE));
+        localStorage.setItem(key, JSON.stringify(INITIAL_DEMO_WARDROBE));
         return INITIAL_DEMO_WARDROBE;
       }
       const parsed = JSON.parse(data);
       if (!Array.isArray(parsed) || parsed.length === 0) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DEMO_WARDROBE));
+        localStorage.setItem(key, JSON.stringify(INITIAL_DEMO_WARDROBE));
         return INITIAL_DEMO_WARDROBE;
       }
       return parsed;
@@ -290,8 +326,10 @@ export class StorageService {
 
   public static saveWardrobe(items: WardrobeItem[]): void {
     if (!this.isBrowser()) return;
+    const email = this.getActiveEmail();
+    const key = email ? this.wardrobeKey(email) : STORAGE_KEY;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(key, JSON.stringify(items));
     } catch (e) {
       console.error('Error saving wardrobe items to localStorage', e);
     }
@@ -313,7 +351,6 @@ export class StorageService {
     const current = this.getWardrobe();
     const index = current.findIndex(i => i.id === id);
     if (index === -1) return null;
-
     current[index] = { ...current[index], ...updates };
     this.saveWardrobe(current);
     return current[index];
@@ -323,13 +360,11 @@ export class StorageService {
     const current = this.getWardrobe();
     const item = current.find(i => i.id === id);
     if (!item) return null;
-
     const nextStatus: Record<LaundryStatus, LaundryStatus> = {
       CLEAN: 'IN_LAUNDRY',
       IN_LAUNDRY: 'READY_TO_WEAR',
       READY_TO_WEAR: 'CLEAN'
     };
-
     return this.updateItem(id, { laundryStatus: nextStatus[item.laundryStatus] });
   }
 
@@ -343,74 +378,72 @@ export class StorageService {
 
   public static resetToDemo(): WardrobeItem[] {
     if (!this.isBrowser()) return INITIAL_DEMO_WARDROBE;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DEMO_WARDROBE));
+    const email = this.getActiveEmail();
+    const key = email ? this.wardrobeKey(email) : STORAGE_KEY;
+    localStorage.setItem(key, JSON.stringify(INITIAL_DEMO_WARDROBE));
     return INITIAL_DEMO_WARDROBE;
   }
 
-  public static getUserProfile(): UserProfile {
-    const defaultProfile: UserProfile = {
-      name: 'Milanista Curator',
-      email: 'curator@wemilan.fashion',
-      password: 'milan2026',
-      handle: 'milanista',
+  // ── Profile ──────────────────────────────────────────────────────────────────
+
+  private static blankProfile(email: string): UserProfile {
+    return {
+      name: '',
+      email,
       isGuest: false,
-      bio: 'Tactile tailoring, archival palettes & climate-adaptive layering.',
-      aesthetic: 'Milano Minimalist',
-      gender: 'Non-binary',
-      customGender: '',
-      age: 24,
-      location: 'Milan, Italy',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
-      measurements: {
-        topSize: 'M (EU 48 / US 38)',
-        bottomSize: '30W / 32L',
-        shoeSize: 'EU 42.5 / US 9.5',
-        height: '178 cm (5\'10")',
-        fitPreference: 'Tailored',
-        chest: '38 in (96 cm)',
-        waist: '31 in (79 cm)',
-        hips: '36 in (91 cm)',
-        inseam: '32 in (81 cm)',
-        shoulder: '18 in (46 cm)',
-        weight: '68 kg (150 lbs)'
-      }
     };
-
-    if (!this.isBrowser()) return defaultProfile;
-
-    try {
-      const stored = localStorage.getItem(USER_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return {
-          ...defaultProfile,
-          ...parsed,
-          measurements: {
-            ...defaultProfile.measurements,
-            ...(parsed.measurements || {})
-          }
-        };
-      }
-    } catch {}
-
-    localStorage.setItem(USER_KEY, JSON.stringify(defaultProfile));
-    return defaultProfile;
   }
 
-  public static saveUserProfile(updates: Partial<UserProfile>): UserProfile {
-    const current = this.getUserProfile();
+  /** Get profile for any email (returns blank profile if none stored) */
+  public static getProfileForEmail(email: string): UserProfile {
+    if (!this.isBrowser()) return this.blankProfile(email);
+    try {
+      const stored = localStorage.getItem(this.profileKey(email));
+      if (stored) return { ...this.blankProfile(email), ...JSON.parse(stored) };
+    } catch {}
+    return this.blankProfile(email);
+  }
+
+  /** Whether an account with this email has been fully set up before */
+  public static accountExists(email: string): boolean {
+    if (!this.isBrowser()) return false;
+    return !!localStorage.getItem(this.profileKey(email));
+  }
+
+  /** Save profile for a specific email */
+  public static saveProfileForEmail(email: string, updates: Partial<UserProfile>): UserProfile {
+    const current = this.getProfileForEmail(email);
     const updated: UserProfile = {
       ...current,
       ...updates,
+      email, // always keep canonical
       measurements: updates.measurements
         ? { ...(current.measurements || {}), ...updates.measurements } as UserMeasurements
         : current.measurements
     };
-
     if (this.isBrowser()) {
-      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+      localStorage.setItem(this.profileKey(email), JSON.stringify(updated));
     }
     return updated;
+  }
+
+  // ── Active-session helpers (used throughout the app) ─────────────────────────
+
+  public static getUserProfile(): UserProfile {
+    const email = this.getActiveEmail();
+    if (email) return this.getProfileForEmail(email);
+    // Legacy / guest fallback
+    if (!this.isBrowser()) return this.blankProfile('guest');
+    try {
+      const stored = localStorage.getItem(USER_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return this.blankProfile('guest');
+  }
+
+  public static saveUserProfile(updates: Partial<UserProfile>): UserProfile {
+    const email = this.getActiveEmail() || updates.email || 'guest';
+    return this.saveProfileForEmail(email, updates);
   }
 
   public static getSessionUser(): UserProfile {
@@ -420,5 +453,21 @@ export class StorageService {
   public static setSessionUser(user: Partial<UserProfile>): void {
     this.saveUserProfile(user);
   }
+
+  /** Full login: set session + return profile */
+  public static login(email: string, password: string): { profile: UserProfile; isNewAccount: boolean } {
+    const isNew = !this.accountExists(email);
+    this.startSession(email);
+    // Save credentials
+    this.saveProfileForEmail(email, { email, password, isGuest: false });
+    const profile = this.getProfileForEmail(email);
+    return { profile, isNewAccount: isNew };
+  }
+
+  /** Full logout: clear session */
+  public static logout(): void {
+    this.endSession();
+  }
 }
+
 

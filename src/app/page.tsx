@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import OnboardingWizard from '@/components/OnboardingWizard';
+import SignInWelcome from '@/components/SignInWelcome';
 
 export default function HomePage() {
   const router = useRouter();
@@ -50,9 +51,11 @@ export default function HomePage() {
   const [showSplash, setShowSplash] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
-  const [authMode, setAuthMode] = useState<'welcome' | 'signin' | 'signup'>('welcome');
+  const [showSignInWelcome, setShowSignInWelcome] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signedInProfile, setSignedInProfile] = useState<{ name: string; aesthetic?: string } | null>(null);
 
   // Domain data states
   const [weather, setWeather] = useState<WeatherInfo | null>(null);
@@ -66,11 +69,12 @@ export default function HomePage() {
 
   // Initialize data
   useEffect(() => {
-    // Check if user was already in session
-    const user = StorageService.getSessionUser();
-    if (user && !user.isGuest) {
-      setIsAuthenticated(true);
+    // Check if an email was previously used to prefill the email field
+    const activeEmail = StorageService.getActiveEmail();
+    if (activeEmail) {
+      setEmail(activeEmail);
     }
+    // We do NOT set isAuthenticated = true here: the user must initially login after the intro!
 
     const items = StorageService.getWardrobe();
     setWardrobe(items);
@@ -166,28 +170,22 @@ export default function HomePage() {
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save email immediately so the wizard can access it
-    StorageService.saveUserProfile({
-      email: email || 'user@wemilan.com',
-      password: password || 'milan2026',
-      isGuest: false,
-    });
-    // New sign-ups go through the personalization wizard
-    if (authMode === 'signup') {
-      setNeedsOnboarding(true);
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(true);
-    }
-  };
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) return;
 
-  const handleGuestEntry = () => {
-    StorageService.setSessionUser({
-      name: 'Milan Member',
-      email: 'guest@wemilan.com',
-      isGuest: false
-    });
+    sound.playCuteClick();
+
+    const { profile, isNewAccount } = StorageService.login(cleanEmail, password || 'milan2026');
+    const items = StorageService.getWardrobe();
+    setWardrobe(items);
     setIsAuthenticated(true);
+
+    if (authMode === 'signup' || isNewAccount || !profile.name) {
+      setNeedsOnboarding(true);
+    } else {
+      setSignedInProfile({ name: profile.name, aesthetic: profile.aesthetic });
+      setShowSignInWelcome(true);
+    }
   };
 
   // 1. Splash Screen
@@ -195,7 +193,7 @@ export default function HomePage() {
     return <SplashLoader onComplete={() => setShowSplash(false)} />;
   }
 
-  // 2. Welcome & Auth Screen
+  // 2. Initial Sign In & Personalization Wizard Screen (User must initially login after intro)
   if (!isAuthenticated) {
     return (
       <div className={`relative flex-1 flex flex-col justify-between p-6 min-h-full overflow-hidden transition-colors duration-300 ${
@@ -224,8 +222,8 @@ export default function HomePage() {
         </div>
 
         {/* Brand Header */}
-        <div className="relative z-10 pt-8 text-center">
-          <div className="inline-flex w-24 h-24 items-center justify-center mb-3">
+        <div className="relative z-10 pt-6 text-center">
+          <div className="inline-flex w-20 h-20 items-center justify-center mb-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={assetPath('/logo.png')}
@@ -239,145 +237,146 @@ export default function HomePage() {
               hinge="top"
               trigger="mount"
               duration={0.7}
-              fontSize="2.2rem"
+              fontSize="2rem"
               fontWeight={600}
               color={isLight ? '#181A31' : '#F2ECDD'}
               className="font-serif tracking-tight entrance-brand-text"
             />
           </div>
-          <p className={`tagline-cursive text-xl mt-2 tracking-wide ${
+          <p className={`tagline-cursive text-lg mt-1 tracking-wide ${
             isLight ? 'text-[#9E7329]' : 'text-[#E2C78C]'
           }`}>
             The world&apos;s your runway
           </p>
         </div>
 
-        {/* Hero Copy */}
-        <div className="relative z-10 my-auto py-6 text-center">
-          <div className="flex flex-col items-center">
-            <FoldText
-              text="Your wardrobe. Reimagined."
-              splitBy="word"
-              hinge="left"
-              trigger="mount"
-              duration={0.6}
-              stagger={0.06}
-              fontSize="1.6rem"
-              fontWeight={600}
-              color={isLight ? '#181A31' : '#F2ECDD'}
-              className="font-serif leading-snug"
-            />
-          </div>
-          <p className={`font-sans text-xs mt-3 max-w-[280px] mx-auto ${
-            isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+        {/* Auth Wizard Card */}
+        <div className="relative z-10 my-auto py-2 text-center max-w-[340px] w-full mx-auto">
+          {/* Segmented Switcher for Sign In vs Create Account */}
+          <div className={`flex items-center justify-center p-1 rounded-full border mb-4 max-w-[280px] mx-auto ${
+            isLight
+              ? 'bg-[#EFEAE1] border-[rgba(24,26,49,0.1)]'
+              : 'bg-[#272A4B]/80 border-[rgba(242,236,221,0.12)]'
           }`}>
-            Style that adapts to your environment, plans, and emotional state.
-          </p>
-
-          {/* Sign In / Sign Up Form */}
-          {authMode !== 'welcome' && (
-            <form onSubmit={handleAuthSubmit} className="mt-6 text-left space-y-3 max-w-[320px] mx-auto">
-              <div>
-                <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
-                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
-                }`}>
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className={`w-4 h-4 absolute left-3 top-3 ${
-                    isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
-                  }`} />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@domain.com"
-                    className={`w-full border rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-[#CCA166] ${
-                      isLight
-                        ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
-                        : 'bg-[#181A31] border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
-                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
-                }`}>
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className={`w-4 h-4 absolute left-3 top-3 ${
-                    isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
-                  }`} />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className={`w-full border rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-[#CCA166] ${
-                      isLight
-                        ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
-                        : 'bg-[#181A31] border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full mt-2 bg-[#E44C4E] hover:bg-[#B93A3C] text-[#181A31] font-sans font-bold py-3 rounded-full transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
-              >
-                <span>{authMode === 'signin' ? 'Sign In' : 'Create Account'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3 pb-4">
-          {authMode === 'welcome' ? (
-            <>
-              <button
-                onClick={() => setAuthMode('signup')}
-                className="w-full bg-[#E44C4E] hover:bg-[#B93A3C] text-[#181A31] font-sans font-bold py-3.5 rounded-full transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => setAuthMode('signin')}
-                className={`w-full font-sans font-semibold py-3 rounded-full transition-all ${
-                  isLight
-                    ? 'bg-white hover:bg-[#FAF7F2] text-[#181A31] border border-[rgba(24,26,49,0.15)] shadow-sm'
-                    : 'bg-transparent hover:bg-[#272A4B] text-[#F2ECDD] border border-[rgba(242,236,221,0.2)]'
-                }`}
-              >
-                Sign In
-              </button>
-
-              <button
-                onClick={handleGuestEntry}
-                className="w-full text-center font-mono text-xs text-[#CCA166] hover:text-[#E2C78C] tracking-wide pt-2"
-              >
-                Enter Instant Demo Experience →
-              </button>
-            </>
-          ) : (
             <button
-              onClick={() => setAuthMode('welcome')}
-              className={`w-full text-center font-mono text-xs transition-colors ${
-                isLight ? 'text-[#616584] hover:text-[#181A31]' : 'text-[#9C9FBE] hover:text-[#F2ECDD]'
+              type="button"
+              onClick={() => { sound.playCuteClick(); setAuthMode('signin'); }}
+              className={`flex-1 py-1.5 px-3 rounded-full text-xs font-semibold transition-all ${
+                authMode === 'signin'
+                  ? 'bg-[#E44C4E] text-[#181A31] shadow-md font-bold'
+                  : (isLight ? 'text-[#616584] hover:text-[#181A31]' : 'text-[#9C9FBE] hover:text-[#F2ECDD]')
               }`}
             >
-              ← Back to options
+              Sign In
             </button>
-          )}
+            <button
+              type="button"
+              onClick={() => { sound.playCuteClick(); setAuthMode('signup'); }}
+              className={`flex-1 py-1.5 px-3 rounded-full text-xs font-semibold transition-all ${
+                authMode === 'signup'
+                  ? 'bg-[#E44C4E] text-[#181A31] shadow-md font-bold'
+                  : (isLight ? 'text-[#616584] hover:text-[#181A31]' : 'text-[#9C9FBE] hover:text-[#F2ECDD]')
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+
+          <h3 className="font-serif text-xl font-medium tracking-tight mb-1 text-center">
+            {authMode === 'signin' ? 'Sign in to your wardrobe' : 'Create your curator profile'}
+          </h3>
+          <p className={`font-sans text-xs mb-4 text-center ${
+            isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+          }`}>
+            {authMode === 'signin'
+              ? 'Enter with your email to access your personal closet & saved pairings'
+              : 'Sign up to personalize your aesthetic, sizing, and daily curation'}
+          </p>
+
+          <form onSubmit={handleAuthSubmit} className="text-left space-y-3">
+            <div>
+              <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
+                isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+              }`}>
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className={`w-4 h-4 absolute left-3.5 top-3 ${
+                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                }`} />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@domain.com"
+                  className={`w-full border rounded-xl pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#CCA166] transition-colors ${
+                    isLight
+                      ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
+                      : 'bg-[#272A4B]/60 border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
+                  }`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className={`block font-mono text-[10px] uppercase tracking-wider mb-1 ${
+                isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+              }`}>
+                Password
+              </label>
+              <div className="relative">
+                <Lock className={`w-4 h-4 absolute left-3.5 top-3 ${
+                  isLight ? 'text-[#616584]' : 'text-[#9C9FBE]'
+                }`} />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className={`w-full border rounded-xl pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#CCA166] transition-colors ${
+                    isLight
+                      ? 'bg-white border-[rgba(24,26,49,0.15)] text-[#181A31]'
+                      : 'bg-[#272A4B]/60 border-[rgba(242,236,221,0.15)] text-[#F2ECDD]'
+                  }`}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-3 bg-[#E44C4E] hover:bg-[#B93A3C] text-[#181A31] font-sans font-bold py-3.5 rounded-full transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2"
+            >
+              <span>{authMode === 'signin' ? 'Sign In to Wardrobe' : 'Continue to Personalization'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+
+          {/* Switcher link */}
+          <div className="pt-4 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                sound.playCuteClick();
+                setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+              }}
+              className={`font-mono text-xs transition-colors ${
+                isLight ? 'text-[#9E7329] hover:underline' : 'text-[#CCA166] hover:underline'
+              }`}
+            >
+              {authMode === 'signin'
+                ? "Don't have an account? Create one →"
+                : 'Already have an account? Sign in →'}
+            </button>
+          </div>
+        </div>
+
+        {/* Brand footer note */}
+        <div className="relative z-10 text-center pb-2">
+          <p className="font-mono text-[9px] uppercase tracking-widest text-[#9C9FBE]/60">
+            Studio Milano &bull; Private Wardrobe Engine
+          </p>
         </div>
       </div>
     );
@@ -388,7 +387,22 @@ export default function HomePage() {
     return (
       <OnboardingWizard
         email={email}
-        onComplete={() => setNeedsOnboarding(false)}
+        onComplete={() => {
+          setNeedsOnboarding(false);
+          const items = StorageService.getWardrobe();
+          setWardrobe(items);
+        }}
+      />
+    );
+  }
+
+  // 2.5b Sign-In Welcome (returning sign-ins)
+  if (isAuthenticated && showSignInWelcome && signedInProfile) {
+    return (
+      <SignInWelcome
+        name={signedInProfile.name}
+        aesthetic={signedInProfile.aesthetic}
+        onEnter={() => setShowSignInWelcome(false)}
       />
     );
   }
@@ -412,11 +426,18 @@ export default function HomePage() {
           </Link>
           <button
             onClick={() => {
-              StorageService.setSessionUser({ name: 'Guest', email: '', isGuest: true });
+              sound.playCuteClick();
+              StorageService.logout();
               setIsAuthenticated(false);
-              setAuthMode('welcome');
+              setNeedsOnboarding(false);
+              setShowSignInWelcome(false);
+              setSignedInProfile(null);
+              setWardrobe([]);
+              setOutfitIndex(0);
+              setPassword('');
+              setAuthMode('signin');
             }}
-            title="Sign out"
+            title="Sign out of account"
             className="w-8 h-8 rounded-full bg-[#272A4B] border border-[rgba(242,236,221,0.12)] flex items-center justify-center text-[#9C9FBE] hover:text-[#E44C4E] transition-all"
           >
             <LogOut className="w-4 h-4" />

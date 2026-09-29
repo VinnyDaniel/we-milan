@@ -37,8 +37,11 @@ import {
   Lock,
   Calendar,
   ShieldCheck,
-  User as UserIcon
+  User as UserIcon,
+  LogOut
 } from 'lucide-react';
+import sound from '@/services/soundService';
+import { assetPath } from '@/utils/asset';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile>(() => StorageService.getUserProfile());
@@ -625,6 +628,21 @@ Explore my digital wardrobe on We Milan: https://vinnydaniel.github.io/we-milan/
               <ExternalLink className="w-3.5 h-3.5" />
             </div>
           </a>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (confirm('Sign out of your account?')) {
+                sound.playCuteClick();
+                StorageService.logout();
+                window.location.href = assetPath('/');
+              }
+            }}
+            className="w-full bg-[#E44C4E]/10 hover:bg-[#E44C4E]/20 border border-[#E44C4E]/30 text-[#E44C4E] font-sans font-medium text-xs py-3 rounded-2xl flex items-center justify-center gap-2 transition-all"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out ({profile.email || 'Current Account'})</span>
+          </button>
         </div>
       </div>
 
